@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wilde Cafe Strategy Simulation - Week 3</title>
+<style>
+body { font-family: sans-serif; background: #f7f4ef; max-width: 1100px; margin: auto; padding: 20px; }
+h2 { text-align: center; }
+p.instructions { background: #e8f0fe; padding: 12px; border-left: 5px solid #1976d2; }
+table { border-collapse: collapse; margin-top: 20px; font-size: 14px; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
+th { background: #1976d2; color: #fff; }
+.metric-table { background: #dbe5f1; color: #000; width: 260px; float: right; margin-left: 20px; }
+.metric-table th { background: #305496; color: #fff; text-align: left; padding: 6px; }
+.metric-table td { background: #e9edf4; text-align: left; padding: 6px; }
+button { background: #5d4037; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+button:hover { background: #3e2723; }
+input[type=range] { width: 250px; }
+.control-section { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+</style>
+</head>
+
+<body onload="firstWeekAutoRun()">
+<h2>Wilde Cafe Strategy Simulation - Week 3</h2>
+<p class="instructions">
+Welcome to the Wilde Cafe Strategy Simulation!<br>
+Each week, decide how much coffee (in kg) to order to meet customer demand while managing your inventory (the amount that you already have on hand). Note that coffee expires after 4 weeks, so you cannot hoard excess inventory: holding costs also increase with higher inventory levels, so balance your strategy carefully. Your goal is to remain profitable across an entire year whilst balancing various external factors: consider how the different elements of the strategic environment impact your operations. Note that if you exceed $50,000 in debt, the bank will foreclose on your cafe!
+</p>
+<div class="control-section">
+<label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
+<input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
+<button id="nextButton" onclick="nextWeek()">Next Week</button>
+</div>
+
+<table>
+<thead><tr><th>Week</th><th>Demand</th><th>Starting Inv</th><th>Ordered</th><th>Received</th><th>Final Inv</th><th>Lost Sales</th><th>Cost</th><th>Profit/Loss</th></tr></thead>
+<tbody id="log"></tbody>
+</table>
+
+<table class="metric-table">
+<tr><th>Week</th><td id="week">0</td></tr>
+<tr><th>Demand</th><td id="demand">0</td></tr>
+<tr><th>Inventory (kg)</th><td id="inventory">10</td></tr>
+<tr><th>Lost Sales</th><td id="lostSales">0</td></tr>
+<tr><th>Incoming Inventory</th><td id="incoming">0</td></tr>
+<tr><th>Cumulative Profit/Loss</th><td id="cumulativeProfit">$0</td></tr>
+</table>
+
+<script>
+// Auto-run Week 1
+function firstWeekAutoRun() {
+    document.getElementById('orderQty').value = 20;
+    document.getElementById('orderDisplay').innerText = 20;
+    nextWeek();
+}
+
+// Core variables
+let week = 0;
+let inventory = 10;
+let totalProfit = 0;
+let pcost = 30;
+let scost = 80;
+let overheadBase = 5000;
+let supplierCapBase = 50;
+let demandModifier = 1;
+let visionSelected = false;
+let riskDecisionMade = false;
+let riskChoice = false;
+let inventoryAges = Array(4).fill(0);
+
+// PESTLE flags
+let politicalApplied = false, economicApplied = false, socialApplied = false, technologicalApplied = false, legalApplied = false, environmentalApplied = false;
+
+function startSimulation() {
+    let goal = prompt("Choose Wilde Cafe's goal: Type 1 for Profit, 2 for Customer Satisfaction, 3 for Environmental Impact.");
+    if (goal == "1") { demandModifier = 1.1; }
+    else if (goal == "2") { demandModifier = 1; overheadBase *= 1.05; }
+    else if (goal == "3") { supplierCapBase = Math.floor(supplierCapBase * 0.8); }
+    else { alert("Invalid choice, defaulting to Profit focus."); demandModifier = 1.1; }
+    visionSelected = true;
+}
+
+function nextWeek() {
+    if (!visionSelected) startSimulation();
+    week++;
+    let overhead = overheadBase;
+    let supplierCap = supplierCapBase;
+    let eventDemandModifier = 1;
+
+    if (week == 8 && !politicalApplied) { alert("Local council increases outdoor cafe fees. Overhead +$500 for 4 weeks."); politicalApplied = true; }
+    if (politicalApplied && week >= 8 && week <= 11) { overhead += 500; }
+    if (week == 12 && !economicApplied) { alert("Economic downturn reduces disposable income. Demand -20% for 5 weeks."); economicApplied = true; }
+    if (economicApplied && week >= 12 && week <= 16) { eventDemandModifier *= 0.8; }
+    if (week == 18 && !socialApplied) { alert("TikTok trend increases demand. Demand +30% for 3 weeks."); socialApplied = true; }
+    if (socialApplied && week >= 18 && week <= 20) { eventDemandModifier *= 1.3; }
+    if (week == 22 && !technologicalApplied) { alert("New espresso machine reduces overhead by $200 permanently."); overheadBase -= 200; technologicalApplied = true; }
+    if (week == 30 && !legalApplied) { alert("New wage law increases staff wages. Overhead +$500 permanently."); overheadBase += 500; legalApplied = true; }
+    if (week == 35 && !environmentalApplied) { alert("Severe storms disrupt suppliers. Supplier capacity -80% for 3 weeks."); environmentalApplied = true; }
+    if (environmentalApplied && week >= 35 && week <= 37) { supplierCap = Math.floor(supplierCapBase * 0.8); }
+
+    if (week == 15 && !riskDecisionMade) {
+        riskChoice = confirm("Risk Alert: Severe weather forecast. Do you want to increase safety stock by 30 units now?");
+        if (riskChoice) { inventory += 30; }
+        else { alert("Risk accepted: Potential 50% demand loss may occur in Weeks 17-18."); }
+        riskDecisionMade = true;
+    }
+
+    let demand = Math.round(Math.max(5, Math.min(100, randNormal(70, 30))) * demandModifier * eventDemandModifier);
+    if (!riskChoice && (week == 17 || week == 18)) { demand = Math.floor(demand * 0.5); }
+    if (inventory > 80 && Math.random() < 0.2) {
+        alert("A social media scandal reduces demand by 50% for this week due to excess hoarding.");
+        demand = Math.floor(demand * 0.5);
+    }
+
+    let order = parseInt(document.getElementById('orderQty').value) || 0;
+    if (order > supplierCap) {
+        alert("Your supplier can only fulfill up to 50kg per week. Adjusting your order to 50kg.");
+        order = supplierCap;
+    }
+    let received = order;
+
+    inventoryAges.pop();
+    inventoryAges.unshift(received);
+    let expired = inventoryAges[3];
+    inventory = inventoryAges.reduce((a,b) => a+b,0) - expired;
+    let startingInventory = inventory;
+
+    let sold = Math.min(demand, inventory);
+    let lostSales = demand - sold;
+    inventory -= sold;
+
+    let holdingRate = 0.5;
+    if (inventory > 80) { holdingRate = 1; }
+    else if (inventory > 50) { holdingRate = 0.7; }
+    let inventoryHoldingCost = inventory * pcost * holdingRate;
+
+    let cost = (received * pcost) + overhead + inventoryHoldingCost;
+    let revenue = sold * scost;
+    let profit = revenue - cost;
+    totalProfit += profit;
+
+    // STOP if losses exceed $50,000
+    if (totalProfit < -50000) {
+        alert("You have accrued losses greater than $50,000. The bank has forced Wilde Cafe to close. Simulation ended.");
+        document.getElementById('nextButton').disabled = true;
+        return;
+    }
+
+    document.getElementById('week').innerText = week;
+    document.getElementById('demand').innerText = demand;
+    document.getElementById('inventory').innerText = inventory;
+    document.getElementById('lostSales').innerText = lostSales;
+    document.getElementById('incoming').innerText = received;
+    document.getElementById('cumulativeProfit').innerText = "$" + totalProfit.toFixed(2);
+
+    let row = document.createElement('tr');
+    row.innerHTML = `<td>${week}</td><td>${demand}</td><td>${startingInventory}</td><td>${order}</td><td>${received}</td><td>${inventory}</td><td>${lostSales}</td><td>$${cost.toFixed(2)}</td><td>$${profit.toFixed(2)}</td>`;
+    document.getElementById('log').appendChild(row);
+
+    document.getElementById('orderQty').value = 0;
+    document.getElementById('orderDisplay').innerText = 0;
+
+    if (week >= 52) {
+        alert("Simulation complete! Thank you for managing Wilde Cafe for a year.");
+        document.getElementById('nextButton').disabled = true;
+    }
+}
+
+function randNormal(mean, stdDev) {
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
+}
+</script>
+</body>
+</html>
