@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wilde Cafe Simulation - Chaos! Fear! Uncertainty!</title>
+<style>
+body { font-family: sans-serif; background: #f7f4ef; max-width: 1000px; margin: auto; padding: 20px; }
+h2 { text-align: center; }
+p.instructions { background: #e8f0fe; padding: 12px; border-left: 5px solid #1976d2; }
+table { border-collapse: collapse; margin-top: 20px; font-size: 14px; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
+th { background: #1976d2; color: #fff; }
+button { background: #5d4037; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+button:hover { background: #3e2723; }
+input[type=range] { width: 250px; }
+.control-section { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+</style>
+</head>
+<body>
+<h2>Wilde Cafe Simulation - Chaos! Fear! Uncertainty!</h2>
+<p class="instructions">
+Welcome back to another week of managing Wilde Cafe.<br>
+Your goal for this week is survive 26 chaotic weeks: you have recently come across the idea of 'supply chain challenges', and magically it means your business is getting hit by all of these. Ride the wave of uncertainty, and consider what this tells us about something as 'basic' as managing a single product.<br>.<br>
+</p>
+
+<div class="control-section">
+<label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
+<input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
+<button id="nextButton">Next Week</button>
+</div>
+
+<table>
+<thead><tr><th>Week</th><th>Demand</th><th>Ordered</th><th>Received</th><th>Sold</th><th>Final Inventory</th><th>Lost Sales</th><th>Waste Disposal Cost</th><th>Profit/Loss</th></tr></thead>
+<tbody id="log"></tbody>
+</table>
+
+<script>
+let week = 0;
+let inventory = 20;
+let totalProfit = 0;
+let pcost = 40;
+let scost = 80;
+let overhead = 3000;
+let supplierCap = 50;
+let inventoryAges = Array(4).fill(0);
+let competitorEffect = false;
+let forcedClosureWeek = -1;
+
+function firstWeekAutoRun() {
+    document.getElementById('orderQty').value = 20;
+    document.getElementById('orderDisplay').innerText = 20;
+    nextWeek();
+}
+
+function nextWeek() {
+    week++;
+    let demand = Math.floor(Math.random() * 91) + 10;
+    if (competitorEffect) { demand = Math.floor(demand * 0.7); }
+    if (week % 2 === 0) {
+        switch (week) {
+            case 2: alert("Supplier strikes reduce deliveries by 50% this week."); supplierCap = 25; break;
+            case 4: alert("Local festival spikes demand unexpectedly!"); demand += 40; break;
+            case 6: alert("Flood damages stock, forcing disposal of 10kg immediately."); inventory = Math.max(0, inventory - 10); break;
+            case 8: alert("Fuel costs increase, overhead rises by $500."); overhead += 500; break;
+            case 10: alert("Viral TikTok trend causes demand surge!"); demand += 30; break;
+            case 12: alert("Supplier quality issue forces disposal of 15kg of inventory."); inventory = Math.max(0, inventory - 15); break;
+            case 14: alert("New competitors emerge, reducing demand permanently."); competitorEffect = true; break;
+            case 16: alert("Workers quit unexpectedly. Shop will close next week."); forcedClosureWeek = week + 1; break;
+            case 18: alert("Economic downturn reduces customer spending."); demand = Math.floor(demand * 0.8); break;
+            case 20: alert("Equipment failure increases overhead by $400."); overhead += 400; break;
+            case 22: alert("Supply chain issues limit supplier capacity to 10kg."); supplierCap = 10; break;
+            case 24: alert("Local event increases demand by 40kg this week."); demand += 40; break;
+        }
+    } else { supplierCap = 50; }
+    if (week === forcedClosureWeek) {
+        alert("Shop closed this week due to staff shortages. No sales/orders possible.");
+        demand = 0;
+    }
+    let order = (week === forcedClosureWeek) ? 0 : parseInt(document.getElementById('orderQty').value) || 0;
+    let received = Math.min(order, supplierCap);
+    inventoryAges.pop();
+    inventoryAges.unshift(received);
+    let expired = inventoryAges[3];
+    let disposalCost = expired * 10;
+    inventory = inventoryAges.reduce((a,b) => a+b,0) - expired;
+    let startingInventory = inventory;
+    let sold = Math.min(demand, inventory);
+    let lostSales = demand - sold;
+    inventory -= sold;
+    let holdingCost = inventory * pcost * 0.3;
+    let cost = (received * pcost) + overhead + holdingCost + disposalCost;
+    let revenue = sold * scost;
+    let profit = revenue - cost;
+    totalProfit += profit;
+    let row = document.createElement('tr');
+    row.innerHTML = "<td>" + week + "</td>" +
+                    "<td>" + demand + "</td>" +
+                    "<td>" + order + "</td>" +
+                    "<td>" + received + "</td>" +
+                    "<td>" + sold + "</td>" +
+                    "<td>" + inventory + "</td>" +
+                    "<td>" + lostSales + "</td>" +
+                    "<td>$" + disposalCost.toFixed(2) + "</td>" +
+                    "<td>$" + profit.toFixed(2) + "</td>";
+    document.getElementById('log').appendChild(row);
+    document.getElementById('orderQty').value = 0;
+    document.getElementById('orderDisplay').innerText = 0;
+    if (week >= 26) {
+        let finalMessage = "";
+        if (totalProfit > 0) { finalMessage = "Great work! You survived and should celebrate!"; }
+        else if (totalProfit <= 0 && totalProfit > -500) { finalMessage = "You have barely scraped through: another few weeks and things may have gotten worse! Or better, who knows!"; }
+        else { finalMessage = "Well then. You have reached the end, but at what cost? In this case, the cost is $" + Math.abs(totalProfit.toFixed(2)); }
+        alert("Week 2 simulation complete!\nYour total profit/loss: $" + totalProfit.toFixed(2) + ".\n\n" + finalMessage);
+        document.getElementById('nextButton').disabled = true;
+    }
+}
+window.onload = function() {
+    document.getElementById('nextButton').addEventListener('click', nextWeek);
+    firstWeekAutoRun();
+};
+</script>
+</body>
+</html>
