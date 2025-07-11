@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wilde Cafe's Simulation</title>
+<style>
+body { font-family: sans-serif; background: #f7f4ef; max-width: 1100px; margin: auto; padding: 20px; }
+h2 { text-align: center; }
+table { border-collapse: collapse; margin-top: 20px; font-size: 14px; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
+th { background: #1976d2; color: #fff; }
+.metric-table { background: #dbe5f1; color: #000; width: 260px; float: right; margin-left: 20px; }
+.metric-table th { background: #305496; color: #fff; text-align: left; padding: 6px; }
+.metric-table td { background: #e9edf4; text-align: left; padding: 6px; }
+button { background: #5d4037; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+button:hover { background: #3e2723; }
+input[type=range] { width: 250px; }
+.control-section { display: flex; align-items: center; gap: 10px; }
+</style>
+</head>
+<body>
+
+<p>Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans! Across the session, you will practice managing this business as it gets more and more complicated with elements of supply chain management. The goal of this first simulation is for you to 'jump into the deep end' and try to manage how much to order. Where should you start from? Entirely up to you! Hint: you most likely will go out of business. If you are unsure where to begin, just put press 'next week'.</p>
+<div class="control-section">
+<label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
+<input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
+<button id="nextButton" onclick="nextWeek()">Next Week</button>
+</div>
+
+<table>
+<thead><tr><th>Week</th><th>Demand</th><th>Starting Inventory</th><th>Ordered</th><th>Received</th><th>Final Inventory</th><th>Lost Sales</th><th>Cost</th><th>Profit/Loss</th></tr></thead>
+<tbody id="log"></tbody>
+</table>
+
+<table class="metric-table">
+<tr><th>Week</th><td id="week">0</td></tr>
+<tr><th>Demand</th><td id="demand">0</td></tr>
+<tr><th>Inventory (kg)</th><td id="inventory">10</td></tr>
+<tr><th>Lost Sales</th><td id="lostSales">0</td></tr>
+<tr><th>Incoming Inventory</th><td id="incoming">0</td></tr>
+<tr><th>Cumulative Profit/Loss</th><td id="cumulativeProfit">$0</td></tr>
+</table>
+
+<script>
+let week = 0;
+let inventory = 10;
+let totalProfit = 0;
+let pcost = 30;
+let scost = 90;
+let priceIncrease = false;
+const overhead = 2000;
+const supplierCap = 50;
+
+function nextWeek() {
+    week++;
+    if (week === 25) {
+        const choice = confirm("Tariff Chaos! A 300% tariff on coffee has been introduced. Do you choose to raise your coffee prices by 300%? Click OK for Yes, Cancel for No.");
+        pcost = 150;
+        if (choice) {
+            scost = 450;
+            priceIncrease = true;
+        }
+    }
+    if (week === 15) {
+        alert("Droughts and floods have impacted coffee production in Central America. Supplier capacity will be reduced for the next few weeks. By how much? You have absolutely no idea.");
+    }
+    const demand = priceIncrease ? Math.floor(Math.random() * 16) + 5 : Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
+    const order = parseInt(document.getElementById('orderQty').value) || 0;
+    const received = (week >= 15 && week < 20) ? 0 : Math.min(order, supplierCap);
+    const startingInventory = inventory;
+    inventory += received;
+    const sold = Math.min(demand, inventory);
+    const lostSales = demand - sold;
+    inventory -= sold;
+    const inventoryHoldingCost = inventory * pcost * 0.3;
+    const cost = (received * pcost) + overhead + inventoryHoldingCost;
+    const revenue = sold * scost;
+    const profit = revenue - cost;
+    totalProfit += profit;
+    if (totalProfit <= -5000 && totalProfit > -8000) {
+        alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
+    }
+    if (totalProfit <= -8000 && totalProfit > -10000) {
+        alert("Final warning: the bank may take your business if you do not reduce your debt.");
+    }
+    if (totalProfit <= -10000) {
+        alert("The bank has forced your business to close, and you are now the subject of TikTok videos titled 'the worst places to work'. Please start again.");
+        document.getElementById('nextButton').disabled = true;
+        return;
+    }
+    document.getElementById('week').innerText = week;
+    document.getElementById('demand').innerText = demand;
+    document.getElementById('inventory').innerText = inventory;
+    document.getElementById('lostSales').innerText = lostSales;
+    document.getElementById('incoming').innerText = received;
+    document.getElementById('cumulativeProfit').innerText = "$" + totalProfit.toFixed(2);
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${week}</td><td>${demand}</td><td>${startingInventory}</td><td>${order}</td><td>${received}</td><td>${inventory}</td><td>${lostSales}</td><td>$${cost.toFixed(2)}</td><td>$${profit.toFixed(2)}</td>`;
+    document.getElementById('log').appendChild(row);
+    document.getElementById('orderQty').value = 0;
+    document.getElementById('orderDisplay').innerText = 0;
+}
+
+function randNormal(mean, stdDev) {
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
+}
+</script>
+</body>
+</html>
