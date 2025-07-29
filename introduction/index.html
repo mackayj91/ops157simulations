@@ -24,42 +24,68 @@ body {
   color: #222;
 }
 
+h2 { text-align: center; color: var(--accent-blue); }
+p { margin-bottom: 1em; }
+
 .arrow { stroke: var(--accent-blue); stroke-width: 2; marker-end: url(#arrowhead); }
 .node { fill: #fff; stroke: var(--accent-blue); stroke-width: 2; }
 .label { font-family: var(--font-body); font-size: 14px; fill: var(--accent-blue); text-anchor: middle; }
 
-.animate-flow {
-  stroke-dasharray: 120;
-  stroke-dashoffset: 120;
-  animation: flow 1s ease-out forwards;
-}
+.animate-flow { stroke-dasharray: 120; stroke-dashoffset: 120; animation: flow 1s ease-out forwards; }
 @keyframes flow { to { stroke-dashoffset: 0; } }
+
+.profit-positive { color: var(--accent-green); font-weight: bold; }
+.profit-negative { color: var(--accent-red); font-weight: bold; }
+
+button {
+  background: var(--accent-blue);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+button:hover { background: #145ca0; }
+
+input[type=range] { width: 250px; accent-color: var(--accent-blue); }
+
+.control-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0;
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
 </style>
 </head>
 <body>
 
+<p>Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans! Across the session, you will practice managing this business as it gets more and more complicated with elements of supply chain management. Balance inventory, costs and profit/loss as you play.</p>
+
+<!-- Supply chain diagram with dynamic arrows -->
 <svg viewBox="0 0 860 150" style="width:100%; margin:20px 0;">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#1976d2"/>
     </marker>
   </defs>
-
   <rect class="node" x="10" y="40" width="120" height="50" rx="8"/>
   <text class="label" x="70" y="70">Supplier</text>
-
   <line id="orderArrow" class="arrow" x1="130" y1="65" x2="250" y2="65"/>
   <text id="orderAmountText" class="label" x="190" y="50"></text>
 
   <rect class="node" x="250" y="40" width="120" height="50" rx="8"/>
   <text class="label" x="310" y="70">Orders</text>
-
   <line id="inventoryArrow" class="arrow" x1="370" y1="65" x2="490" y2="65"/>
   <text id="inventoryAmountText" class="label" x="430" y="50"></text>
 
   <rect class="node" x="490" y="40" width="120" height="50" rx="8"/>
   <text class="label" x="550" y="70">Café Inventory</text>
-
   <line id="demandArrow" class="arrow" x1="610" y1="65" x2="730" y2="65"/>
   <text id="demandAmountText" class="label" x="670" y="50"></text>
 
@@ -67,7 +93,41 @@ body {
   <text class="label" x="790" y="70">Customer Demand</text>
 </svg>
 
+<div class="control-section">
+  <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
+  <input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
+  <button id="nextButton" onclick="nextWeek()">Next Week</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Week</th><th>Demand</th><th>Starting Inventory</th><th>Ordered</th>
+      <th>Received</th><th>Final Inventory</th><th>Lost Sales</th><th>Cost</th><th>Profit/Loss</th>
+    </tr>
+  </thead>
+  <tbody id="log"></tbody>
+</table>
+
+<table class="metric-table">
+  <tr><th>Week</th><td id="week">0</td></tr>
+  <tr><th>Demand</th><td id="demand">0</td></tr>
+  <tr><th>Inventory (kg)</th><td id="inventory">10</td></tr>
+  <tr><th>Lost Sales</th><td id="lostSales">0</td></tr>
+  <tr><th>Incoming Inventory</th><td id="incoming">0</td></tr>
+  <tr><th>Cumulative Profit/Loss</th><td id="cumulativeProfit">$0</td></tr>
+</table>
+
 <script>
+let week = 0;
+let inventory = 10;
+let totalProfit = 0;
+let pcost = 30;
+let scost = 90;
+let priceIncrease = false;
+const overhead = 2000;
+const supplierCap = 50;
+
 function updateArrows(order, received, sold) {
   document.getElementById('orderAmountText').textContent = order + ' kg';
   document.getElementById('inventoryAmountText').textContent = received + ' kg';
@@ -85,6 +145,63 @@ function updateArrows(order, received, sold) {
   if (order > 0) orderArrow.classList.add('animate-flow');
   if (received > 0) inventoryArrow.classList.add('animate-flow');
   if (sold > 0) demandArrow.classList.add('animate-flow');
+}
+
+function nextWeek() {
+    week++;
+    const order = parseInt(document.getElementById('orderQty').value) || 0;
+    const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
+    const received = Math.min(order, supplierCap);
+    const startingInventory = inventory;
+    inventory += received;
+    const sold = Math.min(demand, inventory);
+    const lostSales = demand - sold;
+    inventory -= sold;
+    const inventoryHoldingCost = inventory * pcost * 0.3;
+    const cost = (received * pcost) + overhead + inventoryHoldingCost;
+    const revenue = sold * scost;
+    const profit = revenue - cost;
+    totalProfit += profit;
+
+    // Alert thresholds
+    if (totalProfit <= -9000 && totalProfit > -14000) {
+        alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
+    }
+    if (totalProfit <= -14000 && totalProfit > -15000) {
+        alert("Final warning: the bank may take your business if you do not reduce your debt.");
+    }
+    if (totalProfit <= -15000) {
+        alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
+        document.getElementById('nextButton').disabled = true;
+        return;
+    }
+
+    updateArrows(order, received, sold);
+
+    const cumulativeProfitCell = document.getElementById('cumulativeProfit');
+    cumulativeProfitCell.innerText = "$" + totalProfit.toFixed(2);
+    cumulativeProfitCell.className = totalProfit >= 0 ? 'profit-positive' : 'profit-negative';
+
+    document.getElementById('week').innerText = week;
+    document.getElementById('demand').innerText = demand;
+    document.getElementById('inventory').innerText = inventory;
+    document.getElementById('lostSales').innerText = lostSales;
+    document.getElementById('incoming').innerText = received;
+
+    const row = document.createElement('tr');
+    const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+    row.innerHTML = `<td>${week}</td><td>${demand}</td><td>${startingInventory}</td><td>${order}</td><td>${received}</td><td>${inventory}</td><td>${lostSales}</td><td>$${cost.toFixed(2)}</td><td class="${profitClass}">$${profit.toFixed(2)}</td>`;
+    document.getElementById('log').appendChild(row);
+
+    document.getElementById('orderQty').value = 0;
+    document.getElementById('orderDisplay').innerText = 0;
+}
+
+function randNormal(mean, stdDev) {
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
 }
 </script>
 
