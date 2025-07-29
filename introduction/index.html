@@ -79,14 +79,14 @@ function nextWeek() {
     const revenue = sold * scost;
     const profit = revenue - cost;
     totalProfit += profit;
-    if (totalProfit <= -5000 && totalProfit > -8000) {
+    if (totalProfit <= -6000 && totalProfit > -9000) {
         alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
     }
-    if (totalProfit <= -8000 && totalProfit > -10000) {
+    if (totalProfit <= -9000 && totalProfit > -15000) {
         alert("Final warning: the bank may take your business if you do not reduce your debt.");
     }
-    if (totalProfit <= -10000) {
-        alert("The bank has forced your business to close, and you are now the subject of TikTok videos titled 'the worst places to work'. Please start again.");
+    if (totalProfit <= -15000) {
+        alert("The bank has forced your business to close, and you are now the subject viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
         document.getElementById('nextButton').disabled = true;
         return;
     }
