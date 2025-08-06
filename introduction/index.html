@@ -195,11 +195,14 @@ function nextWeek() {
 
     document.getElementById('orderQty').value = 0;
     document.getElementById('orderDisplay').innerText = 0;
-      if (week === 52) {
-        alert("Congratulations! You made it to the end: be sure to make a note of your total profit/loss.");
-        document.getElementById('nextButton').disabled = true;
-}
 
+    // END OF GAME CHECK
+    if (week === 52) {
+        alert("Congratulations! You made it to the end: be sure to make a note of your total profit/loss.");
+        document.getElementById('nextButton').disabled = true;  
+     }
+
+}
 function randNormal(mean, stdDev) {
     let u = 0, v = 0;
     while(u === 0) u = Math.random();
