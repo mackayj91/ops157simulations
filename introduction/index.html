@@ -61,11 +61,112 @@ input[type=range] { width: 250px; accent-color: var(--accent-blue); }
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
+
+/* Simple, clean table styling */
+.table-wrap{
+  background:#fff;
+  padding:12px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+  margin: 14px 0 22px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  background:#fff;
+  text-align:center;
+}
+
+th, td{
+  border:1px solid #e6e6e6;
+  padding:8px 10px;
+}
+
+th{
+  background:#f1f5fb;
+  font-weight:600;
+  color:#123;
+}
+
+.small-note{
+  margin-top:6px;
+  font-size:14px;
+  color:#444;
+}
 </style>
 </head>
 <body>
 
-<p>Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans! You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit! This first activity is based on </p>
+<p>
+  Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans!
+  You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit!
+</p>
+
+<!-- TOP TABLE: PRE-HISTORY (weeks -3 to -1) -->
+<div class="table-wrap">
+  <h3 style="margin:0; color:#1976d2;">Recent history (before you start)</h3>
+  <div class="small-note">
+    These are hypothetical results from weeks <strong>-3</strong> to <strong>-1</strong>. They provide context only and do <strong>not</strong> affect gameplay.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Demand (kg)</th>
+        <th>Sales (kg)</th>
+        <th>End Inventory (kg)</th>
+        <th>Profit/Loss</th>
+      </tr>
+    </thead>
+    <tbody id="last3Body">
+      <tr><td colspan="5">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 4-STEP PROCESS TABLE -->
+<div class="table-wrap">
+  <h3 style="margin:0; color:#1976d2;">How the process works (4 steps + lead time)</h3>
+  <div class="small-note">
+    <strong>Lead time (as coded right now):</strong> the order you place is received <strong>immediately in the same week</strong>.
+    (If you want true “arrives next week”, tell me and I’ll add a simple pipeline variable.)
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>What happens</th>
+        <th>Where it appears in the simulation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1) Order</strong></td>
+        <td>You choose how many kg to order.</td>
+        <td>Slider value becomes <code>order</code></td>
+      </tr>
+      <tr>
+        <td><strong>2) Supplier processes</strong></td>
+        <td>The supplier can fulfil up to <strong>50 kg/week</strong>. Larger orders are capped.</td>
+        <td><code>received = Math.min(order, supplierCap)</code></td>
+      </tr>
+      <tr>
+        <td><strong>3) Receive into inventory</strong></td>
+        <td>Received stock is added to café inventory.</td>
+        <td><code>inventory += received</code></td>
+      </tr>
+      <tr>
+        <td><strong>4) Sell to customers</strong></td>
+        <td>Demand happens; you sell what you can. Any shortfall becomes lost sales.</td>
+        <td><code>sold = Math.min(demand, inventory)</code>, <code>lostSales = demand - sold</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <!-- Supply chain diagram with dynamic arrows -->
 <svg viewBox="0 0 860 150" style="width:100%; margin:20px 0;">
@@ -74,6 +175,7 @@ input[type=range] { width: 250px; accent-color: var(--accent-blue); }
       <polygon points="0 0, 10 3.5, 0 7" fill="#1976d2"/>
     </marker>
   </defs>
+
   <rect class="node" x="10" y="40" width="120" height="50" rx="8"/>
   <text class="label" x="70" y="70">Supplier</text>
   <line id="orderArrow" class="arrow" x1="130" y1="65" x2="250" y2="65"/>
@@ -95,10 +197,12 @@ input[type=range] { width: 250px; accent-color: var(--accent-blue); }
 
 <div class="control-section">
   <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
-  <input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
+  <input type="range" id="orderQty" min="0" max="50" step="5" value="0"
+         oninput="orderDisplay.innerText=this.value">
   <button id="nextButton" onclick="nextWeek()">Next Week</button>
 </div>
 
+<!-- MAIN LOG TABLE -->
 <table>
   <thead>
     <tr>
@@ -109,6 +213,7 @@ input[type=range] { width: 250px; accent-color: var(--accent-blue); }
   <tbody id="log"></tbody>
 </table>
 
+<!-- METRICS TABLE -->
 <table class="metric-table">
   <tr><th>Week</th><td id="week">0</td></tr>
   <tr><th>Demand</th><td id="demand">0</td></tr>
@@ -139,7 +244,7 @@ function updateArrows(order, received, sold) {
 
   [orderArrow, inventoryArrow, demandArrow].forEach(arrow => {
     arrow.classList.remove('animate-flow');
-    void arrow.offsetWidth;
+    void arrow.offsetWidth; // force reflow so animation restarts
   });
 
   if (order > 0) orderArrow.classList.add('animate-flow');
@@ -147,70 +252,111 @@ function updateArrows(order, received, sold) {
   if (sold > 0) demandArrow.classList.add('animate-flow');
 }
 
+// Hypothetical pre-history (weeks -3, -2, -1). Context only.
+const preHistory = [
+  { week: -3, demand: 40, sold: 38, endInventory: 12, profit: 320 },
+  { week: -2, demand: 55, sold: 50, endInventory: 10, profit: -180 },
+  { week: -1, demand: 70, sold: 60, endInventory: 6,  profit: -620 }
+];
+
+function renderPreHistory() {
+  const body = document.getElementById('last3Body');
+  if (!body) return;
+
+  body.innerHTML = preHistory.map(r => {
+    const profitClass = r.profit >= 0 ? 'profit-positive' : 'profit-negative';
+    return `
+      <tr>
+        <td>${r.week}</td>
+        <td>${r.demand}</td>
+        <td>${r.sold}</td>
+        <td>${r.endInventory}</td>
+        <td class="${profitClass}">$${r.profit.toFixed(2)}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
 function nextWeek() {
-    week++;
-    const order = parseInt(document.getElementById('orderQty').value) || 0;
-    const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
-    const received = Math.min(order, supplierCap);
-    const startingInventory = inventory;
-    inventory += received;
-    const sold = Math.min(demand, inventory);
-    const lostSales = demand - sold;
-    inventory -= sold;
-    const inventoryHoldingCost = inventory * pcost * 0.3;
-    const cost = (received * pcost) + overhead + inventoryHoldingCost;
-    const revenue = sold * scost;
-    const profit = revenue - cost;
-    totalProfit += profit;
+  week++;
+  const order = parseInt(document.getElementById('orderQty').value, 10) || 0;
 
-    // Alert thresholds
-    if (totalProfit <= -7000 && totalProfit > -9000) {
-        alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
-    }
-    if (totalProfit <= -14000 && totalProfit > -15000) {
-        alert("Final warning: the bank may take your business if you do not reduce your debt.");
-    }
-    if (totalProfit <= -15000) {
-        alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
-        document.getElementById('nextButton').disabled = true;
-        return;
-    }
+  const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
+  const received = Math.min(order, supplierCap);
 
-    updateArrows(order, received, sold);
+  const startingInventory = inventory;
+  inventory += received;
 
-    const cumulativeProfitCell = document.getElementById('cumulativeProfit');
-    cumulativeProfitCell.innerText = "$" + totalProfit.toFixed(2);
-    cumulativeProfitCell.className = totalProfit >= 0 ? 'profit-positive' : 'profit-negative';
+  const sold = Math.min(demand, inventory);
+  const lostSales = demand - sold;
+  inventory -= sold;
 
-    document.getElementById('week').innerText = week;
-    document.getElementById('demand').innerText = demand;
-    document.getElementById('inventory').innerText = inventory;
-    document.getElementById('lostSales').innerText = lostSales;
-    document.getElementById('incoming').innerText = received;
+  const inventoryHoldingCost = inventory * pcost * 0.3;
+  const cost = (received * pcost) + overhead + inventoryHoldingCost;
+  const revenue = sold * scost;
+  const profit = revenue - cost;
+  totalProfit += profit;
 
-    const row = document.createElement('tr');
-    const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
-    row.innerHTML = `<td>${week}</td><td>${demand}</td><td>${startingInventory}</td><td>${order}</td><td>${received}</td><td>${inventory}</td><td>${lostSales}</td><td>$${cost.toFixed(2)}</td><td class="${profitClass}">$${profit.toFixed(2)}</td>`;
-    document.getElementById('log').appendChild(row);
+  // Alert thresholds
+  if (totalProfit <= -7000 && totalProfit > -9000) {
+    alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
+  }
+  if (totalProfit <= -14000 && totalProfit > -15000) {
+    alert("Final warning: the bank may take your business if you do not reduce your debt.");
+  }
+  if (totalProfit <= -15000) {
+    alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
+    document.getElementById('nextButton').disabled = true;
+    return;
+  }
 
-    document.getElementById('orderQty').value = 0;
-    document.getElementById('orderDisplay').innerText = 0;
+  updateArrows(order, received, sold);
 
-    // END OF GAME CHECK
-    if (week === 52) {
-        alert("Congratulations! You made it to the end: be sure to make a note of your total profit/loss.");
-        document.getElementById('nextButton').disabled = true;  
-     }
+  const cumulativeProfitCell = document.getElementById('cumulativeProfit');
+  cumulativeProfitCell.innerText = "$" + totalProfit.toFixed(2);
+  cumulativeProfitCell.className = totalProfit >= 0 ? 'profit-positive' : 'profit-negative';
 
+  document.getElementById('week').innerText = week;
+  document.getElementById('demand').innerText = demand;
+  document.getElementById('inventory').innerText = inventory;
+  document.getElementById('lostSales').innerText = lostSales;
+  document.getElementById('incoming').innerText = received;
+
+  const row = document.createElement('tr');
+  const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+  row.innerHTML = `
+    <td>${week}</td>
+    <td>${demand}</td>
+    <td>${startingInventory}</td>
+    <td>${order}</td>
+    <td>${received}</td>
+    <td>${inventory}</td>
+    <td>${lostSales}</td>
+    <td>$${cost.toFixed(2)}</td>
+    <td class="${profitClass}">$${profit.toFixed(2)}</td>
+  `;
+  document.getElementById('log').appendChild(row);
+
+  document.getElementById('orderQty').value = 0;
+  document.getElementById('orderDisplay').innerText = 0;
+
+  // END OF GAME CHECK
+  if (week === 52) {
+    alert("Congratulations! You made it to the end: be sure to make a note of your total profit/loss.");
+    document.getElementById('nextButton').disabled = true;
+  }
 }
+
 function randNormal(mean, stdDev) {
-    let u = 0, v = 0;
-    while(u === 0) u = Math.random();
-    while(v === 0) v = Math.random();
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
 }
+
+// Render the pre-history table on page load
+renderPreHistory();
 </script>
 
 </body>
 </html>
-
