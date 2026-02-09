@@ -249,9 +249,9 @@ function updateArrows(orderPlaced, receivedThisWeek, sold) {
 
 // Hypothetical pre-history (weeks -3, -2, -1). Context only.
 const preHistory = [
-  { week: 3 weeks ago, demand: 40, sold: 38, endInventory: 12, profit: 320 },
-  { week: 2 weeks ago, demand: 55, sold: 50, endInventory: 10, profit: -180 },
-  { week: 1 week ago, demand: 70, sold: 60, endInventory: 6,  profit: -620 }
+  { week: "3 weeks ago", demand: 40, sold: 38, endInventory: 12, profit: 320 },
+  { week: "2 weeks ago", demand: 55, sold: 50, endInventory: 10, profit: -180 },
+  { week: "1 week ago", demand: 70, sold: 60, endInventory: 6,  profit: -620 }
 ];
 
 function renderPreHistory() {
@@ -279,7 +279,7 @@ function renderPreHistory() {
 */
 let incomingNextWeek = 0;
 let warned7000 = false;
-let warned14000 = false;
+let warned15000 = false;
 let closedBusiness = false;
 
 function nextWeek() {
@@ -313,9 +313,9 @@ if (totalProfit <= -7000 && !warned7000) {
   warned7000 = true;
 }
 
-if (totalProfit <= -15000 && !warned14000) {
-  alert("Final warning: the bank may take your business if you do not reduce your debt if you get to $20,000 of debt.");
-  warned14000 = true;
+if (totalProfit <= -15000 && !warned15000) {
+  alert("Final warning: the bank may will close your business if you get to $20,000 of debt.");
+  warned15000 = true;
 }
 
 if (totalProfit <= -20000 && !closedBusiness) {
