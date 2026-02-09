@@ -225,7 +225,7 @@ let totalProfit = 0;
 let pcost = 30;
 let scost = 90;
 let priceIncrease = false;
-const overhead = 2000;
+const overhead = 1000;
 const supplierCap = 50;
 
 function updateArrows(orderPlaced, receivedThisWeek, sold) {
@@ -249,9 +249,9 @@ function updateArrows(orderPlaced, receivedThisWeek, sold) {
 
 // Hypothetical pre-history (weeks -3, -2, -1). Context only.
 const preHistory = [
-  { week: -3, demand: 40, sold: 38, endInventory: 12, profit: 320 },
-  { week: -2, demand: 55, sold: 50, endInventory: 10, profit: -180 },
-  { week: -1, demand: 70, sold: 60, endInventory: 6,  profit: -620 }
+  { week: 3 weeks ago, demand: 40, sold: 38, endInventory: 12, profit: 320 },
+  { week: 2 weeks ago, demand: 55, sold: 50, endInventory: 10, profit: -180 },
+  { week: 1 week ago, demand: 70, sold: 60, endInventory: 6,  profit: -620 }
 ];
 
 function renderPreHistory() {
@@ -278,6 +278,9 @@ function renderPreHistory() {
   - incomingNextWeek: what will be received at the start of the next week
 */
 let incomingNextWeek = 0;
+let warned7000 = false;
+let warned14000 = false;
+let closedBusiness = false;
 
 function nextWeek() {
   week++;
@@ -288,7 +291,7 @@ function nextWeek() {
   inventory += receivedThisWeek;
 
   // Generate demand and sell
-  const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
+  const demand = Math.round(Math.max(5, Math.min(80, randNormal(40, 20))) / 5) * 5;
   const sold = Math.min(demand, inventory);
   const lostSales = demand - sold;
   inventory -= sold;
@@ -305,17 +308,22 @@ function nextWeek() {
   incomingNextWeek = Math.min(orderPlacedThisWeek, supplierCap);
 
   // Alerts
-  if (totalProfit <= -7000 && totalProfit > -9000) {
-    alert("You are beginning to face financial distress and the inability to pay your bills: try to reduce your debt.");
-  }
-  if (totalProfit <= -14000 && totalProfit > -15000) {
-    alert("Final warning: the bank may take your business if you do not reduce your debt.");
-  }
-  if (totalProfit <= -15000) {
-    alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
-    document.getElementById('nextButton').disabled = true;
-    return;
-  }
+if (totalProfit <= -7000 && !warned7000) {
+  alert("You are beginning to face financial distress and the inability to pay your bills: try to reduce your debt to below $7000..");
+  warned7000 = true;
+}
+
+if (totalProfit <= -15000 && !warned14000) {
+  alert("Final warning: the bank may take your business if you do not reduce your debt if you get to $20,000 of debt.");
+  warned14000 = true;
+}
+
+if (totalProfit <= -20000 && !closedBusiness) {
+  alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
+  closedBusiness = true;
+  document.getElementById('nextButton').disabled = true;
+  return;
+}
 
   // Update diagram arrows
   updateArrows(orderPlacedThisWeek, receivedThisWeek, sold);
