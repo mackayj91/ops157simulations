@@ -104,11 +104,47 @@ th{
   You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit!
 </p>
 
-<!-- TOP TABLE: PRE-HISTORY (weeks -3 to -1) -->
+<!-- PROCESS TABLE (NOW FIRST) -->
 <div class="table-wrap">
-  <h3 style="margin:0; color:#1976d2;">Recent history (before you start)</h3>
+  <h3 style="margin:0; color:#1976d2;">How the process works (4 steps + 1-week lead time)</h3>
   <div class="small-note">
-    These are hypothetical results from weeks <strong>-3</strong> to <strong>-1</strong>. They provide context only and do <strong>not</strong> affect gameplay.
+    <strong>Lead time:</strong> any order placed in <strong>Week N</strong> is delivered at the start of <strong>Week N+1</strong>.
+    (e.g., order 50kg in Week 1 → receive it in Week 2).
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>What happens</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1) Order</strong></td>
+        <td>You decide how many kg to order for delivery next week.</td>
+      </tr>
+      <tr>
+        <td><strong>2) Supplier processes (1 week)</strong></td>
+        <td>The supplier prepares your order. It takes <strong>one week</strong> to arrive, and the supplier can fulfil up to <strong>50 kg/week</strong>.</td>
+      </tr>
+      <tr>
+        <td><strong>3) Receive into inventory</strong></td>
+        <td>At the <strong>start of the next week</strong>, the delivered quantity is added to your café inventory.</td>
+      </tr>
+      <tr>
+        <td><strong>4) Sell to customers</strong></td>
+        <td>Demand happens during the week; you sell what you can from inventory. Any shortage becomes lost sales, which causes you to lose money (as you still need to pay bills).</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- HISTORY TABLE (NOW SECOND) -->
+<div class="table-wrap">
+  <h3 style="margin:0; color:#1976d2;">Recent history</h3>
+  <div class="small-note">
+    These are results from the previous few weeks to help you see where you are currently positioned <strong>-3</strong> to <strong>-1</strong>.
   </div>
 
   <table>
@@ -123,47 +159,6 @@ th{
     </thead>
     <tbody id="last3Body">
       <tr><td colspan="5">Loading…</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 4-STEP PROCESS TABLE -->
-<div class="table-wrap">
-  <h3 style="margin:0; color:#1976d2;">How the process works (4 steps + lead time)</h3>
-  <div class="small-note">
-    <strong>Lead time (as coded right now):</strong> the order you place is received <strong>immediately in the same week</strong>.
-    (If you want true “arrives next week”, tell me and I’ll add a simple pipeline variable.)
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Step</th>
-        <th>What happens</th>
-        <th>Where it appears in the simulation</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>1) Order</strong></td>
-        <td>You choose how many kg to order.</td>
-        <td>Slider value becomes <code>order</code></td>
-      </tr>
-      <tr>
-        <td><strong>2) Supplier processes</strong></td>
-        <td>The supplier can fulfil up to <strong>50 kg/week</strong>. Larger orders are capped.</td>
-        <td><code>received = Math.min(order, supplierCap)</code></td>
-      </tr>
-      <tr>
-        <td><strong>3) Receive into inventory</strong></td>
-        <td>Received stock is added to café inventory.</td>
-        <td><code>inventory += received</code></td>
-      </tr>
-      <tr>
-        <td><strong>4) Sell to customers</strong></td>
-        <td>Demand happens; you sell what you can. Any shortfall becomes lost sales.</td>
-        <td><code>sold = Math.min(demand, inventory)</code>, <code>lostSales = demand - sold</code></td>
-      </tr>
     </tbody>
   </table>
 </div>
@@ -233,9 +228,9 @@ let priceIncrease = false;
 const overhead = 2000;
 const supplierCap = 50;
 
-function updateArrows(order, received, sold) {
-  document.getElementById('orderAmountText').textContent = order + ' kg';
-  document.getElementById('inventoryAmountText').textContent = received + ' kg';
+function updateArrows(orderPlaced, receivedThisWeek, sold) {
+  document.getElementById('orderAmountText').textContent = orderPlaced + ' kg';
+  document.getElementById('inventoryAmountText').textContent = receivedThisWeek + ' kg';
   document.getElementById('demandAmountText').textContent = sold + ' kg';
 
   const orderArrow = document.getElementById('orderArrow');
@@ -247,8 +242,8 @@ function updateArrows(order, received, sold) {
     void arrow.offsetWidth; // force reflow so animation restarts
   });
 
-  if (order > 0) orderArrow.classList.add('animate-flow');
-  if (received > 0) inventoryArrow.classList.add('animate-flow');
+  if (orderPlaced > 0) orderArrow.classList.add('animate-flow');
+  if (receivedThisWeek > 0) inventoryArrow.classList.add('animate-flow');
   if (sold > 0) demandArrow.classList.add('animate-flow');
 }
 
@@ -277,29 +272,41 @@ function renderPreHistory() {
   }).join('');
 }
 
+/*
+  1-week lead time implementation:
+  - orderPlacedThisWeek: what the student decides now (arrives next week)
+  - incomingNextWeek: what will be received at the start of the next week
+*/
+let incomingNextWeek = 0;
+
 function nextWeek() {
   week++;
-  const order = parseInt(document.getElementById('orderQty').value, 10) || 0;
 
-  const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
-  const received = Math.min(order, supplierCap);
-
+  // Receive last week's order at the start of this week
+  const receivedThisWeek = incomingNextWeek;
   const startingInventory = inventory;
-  inventory += received;
+  inventory += receivedThisWeek;
 
+  // Generate demand and sell
+  const demand = Math.round(Math.max(5, Math.min(100, randNormal(50, 30))) / 5) * 5;
   const sold = Math.min(demand, inventory);
   const lostSales = demand - sold;
   inventory -= sold;
 
+  // Costs & profit
   const inventoryHoldingCost = inventory * pcost * 0.3;
-  const cost = (received * pcost) + overhead + inventoryHoldingCost;
+  const cost = (receivedThisWeek * pcost) + overhead + inventoryHoldingCost;
   const revenue = sold * scost;
   const profit = revenue - cost;
   totalProfit += profit;
 
-  // Alert thresholds
+  // Now place an order for NEXT week (arrives next week)
+  const orderPlacedThisWeek = parseInt(document.getElementById('orderQty').value, 10) || 0;
+  incomingNextWeek = Math.min(orderPlacedThisWeek, supplierCap);
+
+  // Alerts
   if (totalProfit <= -7000 && totalProfit > -9000) {
-    alert("The bank is concerned about your unpaid bills, and your staff are complaining.");
+    alert("You are beginning to face financial distress and the inability to pay your bills: try to reduce your debt.");
   }
   if (totalProfit <= -14000 && totalProfit > -15000) {
     alert("Final warning: the bank may take your business if you do not reduce your debt.");
@@ -310,8 +317,10 @@ function nextWeek() {
     return;
   }
 
-  updateArrows(order, received, sold);
+  // Update diagram arrows
+  updateArrows(orderPlacedThisWeek, receivedThisWeek, sold);
 
+  // Update metric table
   const cumulativeProfitCell = document.getElementById('cumulativeProfit');
   cumulativeProfitCell.innerText = "$" + totalProfit.toFixed(2);
   cumulativeProfitCell.className = totalProfit >= 0 ? 'profit-positive' : 'profit-negative';
@@ -320,16 +329,18 @@ function nextWeek() {
   document.getElementById('demand').innerText = demand;
   document.getElementById('inventory').innerText = inventory;
   document.getElementById('lostSales').innerText = lostSales;
-  document.getElementById('incoming').innerText = received;
+  document.getElementById('incoming').innerText = incomingNextWeek; // incoming for next week
 
+  // Append row to main log
   const row = document.createElement('tr');
   const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+
   row.innerHTML = `
     <td>${week}</td>
     <td>${demand}</td>
     <td>${startingInventory}</td>
-    <td>${order}</td>
-    <td>${received}</td>
+    <td>${orderPlacedThisWeek}</td>
+    <td>${receivedThisWeek}</td>
     <td>${inventory}</td>
     <td>${lostSales}</td>
     <td>$${cost.toFixed(2)}</td>
@@ -337,6 +348,7 @@ function nextWeek() {
   `;
   document.getElementById('log').appendChild(row);
 
+  // Reset controls
   document.getElementById('orderQty').value = 0;
   document.getElementById('orderDisplay').innerText = 0;
 
