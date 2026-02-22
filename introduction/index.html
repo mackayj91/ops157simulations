@@ -126,7 +126,7 @@ th{
       </tr>
       <tr>
         <td><strong>2) Supplier processes (1 week)</strong></td>
-        <td>The supplier prepares your order. It takes <strong>one week</strong> to arrive, and the supplier can fulfil up to <strong>50 kg/week</strong>.</td>
+        <td>The supplier prepares your order. It takes <strong>one week</strong> to arrive, and the supplier can fulfil up to <strong>40 kg/week</strong>.</td>
       </tr>
       <tr>
         <td><strong>3) Receive into inventory</strong></td>
@@ -222,11 +222,11 @@ th{
 let week = 0;
 let inventory = 10;
 let totalProfit = 0;
-let pcost = 30;
-let scost = 90;
+let pcost = 50;
+let scost = 50;
 let priceIncrease = false;
-const overhead = 1000;
-const supplierCap = 50;
+const overhead = 2000;
+const supplierCap = 40;
 
 function updateArrows(orderPlaced, receivedThisWeek, sold) {
   document.getElementById('orderAmountText').textContent = orderPlaced + ' kg';
