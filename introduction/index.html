@@ -140,36 +140,6 @@ th{
   </table>
 </div>
 
-<!-- HISTORY TABLE (NOW SECOND) -->
-<div class="table-wrap">
-  <h3 style="margin:0; color:#1976d2;">Recent history</h3>
-  <div class="small-note">
-    These are results from the previous few weeks.
-  </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Week</th>
-        <th>Demand (kg)</th>
-        <th>Sales (kg)</th>
-        <th>End Inventory (kg)</th>
-        <th>Profit/Loss</th>
-      </tr>
-    </thead>
-    <tbody id="last3Body">
-      <tr><td colspan="5">Loading…</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="control-section">
-  <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
-  <input type="range" id="orderQty" min="0" max="30" step="1" value="0"
-         oninput="orderDisplay.innerText=this.value">
-  <button id="nextButton" onclick="nextWeek()">Next Week</button>
-</div>
-
 <!-- MAIN LOG TABLE -->
 <table>
   <thead>
@@ -197,33 +167,8 @@ let totalProfit = 0;
 let pcost = 30;
 let scost = 200;
 let priceIncrease = false;
-const overhead = 2000;
+const overhead = 3000;
 const supplierCap = 30;
-
-// Hypothetical pre-history (weeks -3, -2, -1). Context only.
-const preHistory = [
-  { week: "3 weeks ago", demand: 40, sold: 38, endInventory: 12, profit: 320 },
-  { week: "2 weeks ago", demand: 55, sold: 50, endInventory: 10, profit: -180 },
-  { week: "1 week ago", demand: 70, sold: 60, endInventory: 6,  profit: -620 }
-];
-
-function renderPreHistory() {
-  const body = document.getElementById('last3Body');
-  if (!body) return;
-
-  body.innerHTML = preHistory.map(r => {
-    const profitClass = r.profit >= 0 ? 'profit-positive' : 'profit-negative';
-    return `
-      <tr>
-        <td>${r.week}</td>
-        <td>${r.demand}</td>
-        <td>${r.sold}</td>
-        <td>${r.endInventory}</td>
-        <td class="${profitClass}">$${r.profit.toFixed(2)}</td>
-      </tr>
-    `;
-  }).join('');
-}
 
 /*
   1-week lead time implementation:
@@ -244,7 +189,7 @@ function nextWeek() {
   inventory += receivedThisWeek;
 
   // Generate demand and sell
-  const demand = Math.round(Math.max(5, Math.min(40, randNormal(20, 10))) / 5) * 5;
+  const demand = Math.round(Math.max(5, Math.min(60, randNormal(25, 10))) / 5) * 5;
   const sold = Math.min(demand, inventory);
   inventory -= sold;
 
