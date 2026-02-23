@@ -27,13 +27,6 @@ body {
 h2 { text-align: center; color: var(--accent-blue); }
 p { margin-bottom: 1em; }
 
-.arrow { stroke: var(--accent-blue); stroke-width: 2; marker-end: url(#arrowhead); }
-.node { fill: #fff; stroke: var(--accent-blue); stroke-width: 2; }
-.label { font-family: var(--font-body); font-size: 14px; fill: var(--accent-blue); text-anchor: middle; }
-
-.animate-flow { stroke-dasharray: 120; stroke-dashoffset: 120; animation: flow 1s ease-out forwards; }
-@keyframes flow { to { stroke-dashoffset: 0; } }
-
 .profit-positive { color: var(--accent-green); font-weight: bold; }
 .profit-negative { color: var(--accent-red); font-weight: bold; }
 
@@ -95,21 +88,29 @@ th{
   font-size:14px;
   color:#444;
 }
+
+.chart-wrap{
+  background:#fff;
+  padding:12px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+  margin: 14px 0 22px;
+}
 </style>
 </head>
 <body>
 
 <p>
   Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans!
-  You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit! You are provided with somewhat limited information, but know that you sell coffees for $4 each, and you have business overheads of $3000 per week.
+  You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit!
 </p>
 
-<!-- PROCESS TABLE (NOW FIRST) -->
+<!-- PROCESS TABLE -->
 <div class="table-wrap">
-  <h3 style="margin:0; color:#1976d2;">Ordering Cycle</h3>
+  <h3 style="margin:0; color:#1976d2;">How the process works (4 steps + 1-week lead time)</h3>
   <div class="small-note">
     <strong>Lead time:</strong> any order placed in <strong>Week N</strong> is delivered at the start of <strong>Week N+1</strong>.
-    (e.g., order 10kg in Week 1 and then you receive it in Week 2).
+    (e.g., order 50kg in Week 1 → receive it in Week 2).
   </div>
 
   <table>
@@ -130,17 +131,18 @@ th{
       </tr>
       <tr>
         <td><strong>3) Receive into inventory</strong></td>
-        <td>At the <strong>start of the next week</strong>, the delivered quantity is added to your café inventory (including any remaining inventory from the week before).</td>
+        <td>At the <strong>start of the next week</strong>, the delivered quantity is added to your café inventory.</td>
       </tr>
       <tr>
         <td><strong>4) Sell to customers</strong></td>
-        <td>During the week, you sell the beans to customers (via them being processed into coffee). On average sell one kilo of beans for $200 (assuming 50 coffees sold for $4 using 20g of coffee).</td>
+        <td>Demand happens during the week; you sell what you can from inventory. Any shortage becomes lost sales, which causes you to lose money (as you still need to pay bills).</td>
       </tr>
     </tbody>
   </table>
 </div>
+
 <!-- SLIDER -->
-  <div class="control-section">
+<div class="control-section">
   <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
   <input
     type="range"
@@ -153,13 +155,21 @@ th{
   >
   <button id="nextButton" onclick="nextWeek()">Next Week</button>
 </div>
-  
+
 <!-- MAIN LOG TABLE -->
 <table>
   <thead>
     <tr>
-      <th>Week</th><th>Demand</th><th>Carryover Inventory</th><th>Ordered</th>
-      <th>Inventory received at start of Week</th><th>Inventory at end of Week</th><th>Cost</th><th>Profit/Loss</th>
+      <th>Week</th>
+      <th>Demand</th>
+      <th>Sales (kg)</th>
+      <th>Carryover Inventory</th>
+      <th>Ordered</th>
+      <th>Inventory received at start of Week</th>
+      <th>Inventory at end of Week</th>
+      <th>Revenue</th>
+      <th>Cost</th>
+      <th>Profit/Loss</th>
     </tr>
   </thead>
   <tbody id="log"></tbody>
@@ -174,17 +184,23 @@ th{
   <tr><th>Cumulative Profit/Loss</th><td id="cumulativeProfit">$0</td></tr>
 </table>
 
+<!-- PROFIT/LOSS CHART -->
+<div class="chart-wrap">
+  <h3 style="margin:0; color:#1976d2;">Profit/Loss over time</h3>
+  <canvas id="plChart" width="900" height="280"></canvas>
+</div>
+
 <script>
 let week = 0;
 let inventory = 10;
 let totalProfit = 0;
-let pcost = 30;
-let scost = 200;
+const pcost = 30;
+const scost = 200;
 const overhead = 3000;
 const supplierCap = 30;
 
 /*
-  1-week lead time implementation:
+  1-week lead time:
   - orderPlacedThisWeek: what the student decides now (arrives next week)
   - incomingNextWeek: what will be received at the start of the next week
 */
@@ -192,6 +208,10 @@ let incomingNextWeek = 0;
 let warned7000 = false;
 let warned15000 = false;
 let closedBusiness = false;
+
+/* ---- P/L chart state ---- */
+const plWeeks = [];
+const plValues = [];
 
 function nextWeek() {
   week++;
@@ -206,35 +226,32 @@ function nextWeek() {
   const sold = Math.min(demand, inventory);
   inventory -= sold;
 
-  // Costs & profit
+  // Revenue, costs & profit (Revenue uses SOLD * selling price)
+  const revenue = sold * scost;
   const inventoryHoldingCost = inventory * pcost * 0.3;
   const cost = (receivedThisWeek * pcost) + overhead + inventoryHoldingCost;
-  const revenue = sold * scost;
   const profit = revenue - cost;
   totalProfit += profit;
 
-  // Now place an order for NEXT week (arrives next week)
+  // Place an order for NEXT week (arrives next week)
   const orderPlacedThisWeek = parseInt(document.getElementById('orderQty').value, 10) || 0;
   incomingNextWeek = Math.min(orderPlacedThisWeek, supplierCap);
 
   // Alerts
-if (totalProfit <= -7000 && !warned7000) {
-  alert("You are beginning to face financial distress and the inability to pay your bills: try to reduce your debt to below $7000..");
-  warned7000 = true;
-}
-
-if (totalProfit <= -15000 && !warned15000) {
-  alert("Final warning: the bank may will close your business if you get to $20,000 of debt.");
-  warned15000 = true;
-}
-
-if (totalProfit <= -20000 && !closedBusiness) {
-  alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
-  closedBusiness = true;
-  document.getElementById('nextButton').disabled = true;
-  return;
-}
-
+  if (totalProfit <= -7000 && !warned7000) {
+    alert("You are beginning to face financial distress and the inability to pay your bills: try to reduce your debt to below $7000..");
+    warned7000 = true;
+  }
+  if (totalProfit <= -15000 && !warned15000) {
+    alert("Final warning: the bank may will close your business if you get to $20,000 of debt.");
+    warned15000 = true;
+  }
+  if (totalProfit <= -20000 && !closedBusiness) {
+    alert("The bank has forced your business to close, and you are now the subject of viral videos titled 'the worst places to work where you don't get paid'. Please start again.");
+    closedBusiness = true;
+    document.getElementById('nextButton').disabled = true;
+    return;
+  }
 
   // Update metric table
   const cumulativeProfitCell = document.getElementById('cumulativeProfit');
@@ -253,14 +270,21 @@ if (totalProfit <= -20000 && !closedBusiness) {
   row.innerHTML = `
     <td>${week}</td>
     <td>${demand}</td>
+    <td>${sold}</td>
     <td>${startingInventory}</td>
     <td>${orderPlacedThisWeek}</td>
     <td>${receivedThisWeek}</td>
     <td>${inventory}</td>
+    <td>$${revenue.toFixed(2)}</td>
     <td>$${cost.toFixed(2)}</td>
     <td class="${profitClass}">$${profit.toFixed(2)}</td>
   `;
   document.getElementById('log').appendChild(row);
+
+  // Update chart
+  plWeeks.push(week);
+  plValues.push(profit);
+  updateChart();
 
   // Reset controls
   document.getElementById('orderQty').value = 0;
@@ -280,6 +304,97 @@ function randNormal(mean, stdDev) {
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
 }
 
+/* ---------- Minimal no-dependency line chart ---------- */
+function updateChart() {
+  const canvas = document.getElementById('plChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Frame
+  const m = { left: 60, right: 20, top: 24, bottom: 36 };
+  const PW = W - m.left - m.right;
+  const PH = H - m.top - m.bottom;
+
+  // Axes box
+  ctx.strokeStyle = '#ddd';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(m.left, m.top, PW, PH);
+
+  // Title
+  ctx.fillStyle = '#123';
+  ctx.font = 'bold 14px Segoe UI';
+  ctx.fillText('Profit/Loss by Week', m.left, 16);
+
+  if (plValues.length === 0) return;
+
+  const minX = Math.min(...plWeeks);
+  const maxX = Math.max(...plWeeks);
+  let minY = Math.min(...plValues);
+  let maxY = Math.max(...plValues);
+  if (minY === maxY) { minY -= 1; maxY += 1; }
+  const padY = (maxY - minY) * 0.1 || 1;
+  minY -= padY; maxY += padY;
+
+  const xScale = x => m.left + ((x - minX) / (maxX - minX || 1)) * PW;
+  const yScale = y => m.top + (1 - (y - minY) / (maxY - minY)) * PH;
+
+  // Y grid & labels
+  ctx.strokeStyle = '#eee';
+  ctx.fillStyle = '#666';
+  ctx.font = '12px Segoe UI';
+  const yTicks = 5;
+  for (let i = 0; i <= yTicks; i++) {
+    const t = i / yTicks;
+    const y = m.top + t * PH;
+    ctx.beginPath();
+    ctx.moveTo(m.left, y);
+    ctx.lineTo(m.left + PW, y);
+    ctx.stroke();
+    const val = (maxY - (maxY - minY) * t);
+    ctx.fillText('$' + val.toFixed(0), 8, y + 4);
+  }
+
+  // X ticks (weeks)
+  const xStep = Math.max(1, Math.floor((maxX - minX) / 6));
+  ctx.strokeStyle = '#aaa';
+  for (let x = minX; x <= maxX; x += xStep) {
+    const px = xScale(x);
+    ctx.beginPath();
+    ctx.moveTo(px, m.top + PH);
+    ctx.lineTo(px, m.top + PH + 4);
+    ctx.stroke();
+    ctx.fillText('W' + x, px - 10, H - 10);
+  }
+
+  // Zero line
+  if (minY < 0 && maxY > 0) {
+    const zy = yScale(0);
+    ctx.strokeStyle = '#e53935';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(m.left, zy);
+    ctx.lineTo(m.left + PW, zy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Line
+  ctx.strokeStyle = '#1976d2';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  plWeeks.forEach((x, i) => {
+    const px = xScale(x);
+    const py = yScale(plValues[i]);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+}
+
+// Draw empty axes on load
+updateChart();
 </script>
 
 </body>
