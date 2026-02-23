@@ -220,13 +220,13 @@ th{
 
 <script>
 let week = 0;
-let inventory = 10;
+let inventory = 05;
 let totalProfit = 0;
-let pcost = 50;
-let scost = 50;
+let pcost = 30;
+let scost = 100;
 let priceIncrease = false;
-const overhead = 2000;
-const supplierCap = 40;
+const overhead = 3000;
+const supplierCap = 20;
 
 function updateArrows(orderPlaced, receivedThisWeek, sold) {
   document.getElementById('orderAmountText').textContent = orderPlaced + ' kg';
@@ -291,7 +291,7 @@ function nextWeek() {
   inventory += receivedThisWeek;
 
   // Generate demand and sell
-  const demand = Math.round(Math.max(5, Math.min(80, randNormal(40, 20))) / 5) * 5;
+  const demand = Math.round(Math.max(5, Math.min(40, randNormal(20, 10))) / 5) * 5;
   const sold = Math.min(demand, inventory);
   const lostSales = demand - sold;
   inventory -= sold;
