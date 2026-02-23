@@ -213,7 +213,6 @@ th{
   <tr><th>Week</th><td id="week">0</td></tr>
   <tr><th>Demand</th><td id="demand">0</td></tr>
   <tr><th>Inventory (kg)</th><td id="inventory">10</td></tr>
-  <tr><th>Lost Sales</th><td id="lostSales">0</td></tr>
   <tr><th>Incoming Inventory</th><td id="incoming">0</td></tr>
   <tr><th>Cumulative Profit/Loss</th><td id="cumulativeProfit">$0</td></tr>
 </table>
@@ -361,7 +360,7 @@ if (totalProfit <= -20000 && !closedBusiness) {
   document.getElementById('orderDisplay').innerText = 0;
 
   // END OF GAME CHECK
-  if (week === 52) {
+  if (week === 30) {
     alert("Congratulations! You made it to the end: be sure to make a note of your total profit/loss.");
     document.getElementById('nextButton').disabled = true;
   }
