@@ -126,7 +126,7 @@ th{
       </tr>
       <tr>
         <td><strong>2) Supplier processes (1 week)</strong></td>
-        <td>The supplier prepares your order. It takes <strong>one week</strong> to arrive, and the supplier can fulfil up to <strong>40 kg/week</strong>.</td>
+        <td>The supplier prepares your order. It takes <strong>one week</strong> to arrive, and the supplier can fulfil up to <strong>30 kg/week</strong>.</td>
       </tr>
       <tr>
         <td><strong>3) Receive into inventory</strong></td>
@@ -144,7 +144,7 @@ th{
 <div class="table-wrap">
   <h3 style="margin:0; color:#1976d2;">Recent history</h3>
   <div class="small-note">
-    These are results from the previous few weeks to help you see where you are currently positioned <strong>-3</strong> to <strong>-1</strong>.
+    These are results from the previous few weeks.
   </div>
 
   <table>
@@ -200,25 +200,6 @@ let priceIncrease = false;
 const overhead = 2000;
 const supplierCap = 30;
 
-function updateArrows(orderPlaced, receivedThisWeek, sold) {
-  document.getElementById('orderAmountText').textContent = orderPlaced + ' kg';
-  document.getElementById('inventoryAmountText').textContent = receivedThisWeek + ' kg';
-  document.getElementById('demandAmountText').textContent = sold + ' kg';
-
-  const orderArrow = document.getElementById('orderArrow');
-  const inventoryArrow = document.getElementById('inventoryArrow');
-  const demandArrow = document.getElementById('demandArrow');
-
-  [orderArrow, inventoryArrow, demandArrow].forEach(arrow => {
-    arrow.classList.remove('animate-flow');
-    void arrow.offsetWidth; // force reflow so animation restarts
-  });
-
-  if (orderPlaced > 0) orderArrow.classList.add('animate-flow');
-  if (receivedThisWeek > 0) inventoryArrow.classList.add('animate-flow');
-  if (sold > 0) demandArrow.classList.add('animate-flow');
-}
-
 // Hypothetical pre-history (weeks -3, -2, -1). Context only.
 const preHistory = [
   { week: "3 weeks ago", demand: 40, sold: 38, endInventory: 12, profit: 320 },
@@ -265,7 +246,6 @@ function nextWeek() {
   // Generate demand and sell
   const demand = Math.round(Math.max(5, Math.min(40, randNormal(20, 10))) / 5) * 5;
   const sold = Math.min(demand, inventory);
-  const lostSales = demand - sold;
   inventory -= sold;
 
   // Costs & profit
@@ -297,8 +277,6 @@ if (totalProfit <= -20000 && !closedBusiness) {
   return;
 }
 
-  // Update diagram arrows
-  updateArrows(orderPlacedThisWeek, receivedThisWeek, sold);
 
   // Update metric table
   const cumulativeProfitCell = document.getElementById('cumulativeProfit');
@@ -308,7 +286,6 @@ if (totalProfit <= -20000 && !closedBusiness) {
   document.getElementById('week').innerText = week;
   document.getElementById('demand').innerText = demand;
   document.getElementById('inventory').innerText = inventory;
-  document.getElementById('lostSales').innerText = lostSales;
   document.getElementById('incoming').innerText = incomingNextWeek; // incoming for next week
 
   // Append row to main log
@@ -322,7 +299,6 @@ if (totalProfit <= -20000 && !closedBusiness) {
     <td>${orderPlacedThisWeek}</td>
     <td>${receivedThisWeek}</td>
     <td>${inventory}</td>
-    <td>${lostSales}</td>
     <td>$${cost.toFixed(2)}</td>
     <td class="${profitClass}">$${profit.toFixed(2)}</td>
   `;
