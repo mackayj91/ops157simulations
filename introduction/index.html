@@ -192,7 +192,7 @@ th{
 
 <div class="control-section">
   <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
-  <input type="range" id="orderQty" min="0" max="50" step="5" value="0"
+  <input type="range" id="orderQty" min="0" max="30" step="1" value="0"
          oninput="orderDisplay.innerText=this.value">
   <button id="nextButton" onclick="nextWeek()">Next Week</button>
 </div>
