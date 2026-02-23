@@ -101,15 +101,15 @@ th{
 
 <p>
   Welcome! You manage coffee orders between a small coffee shop, Wilde Cafe and their supplier of coffee beans!
-  You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit!
+  You have a simple goal: try and minimize the amount of inventory that you need, whilst ensuring that you still maintain a profit! You are provided with somewhat limited information, but know that you sell coffees for $4 each, and you have business overheads of $3000 per week.
 </p>
 
 <!-- PROCESS TABLE (NOW FIRST) -->
 <div class="table-wrap">
-  <h3 style="margin:0; color:#1976d2;">How the process works (4 steps + 1-week lead time)</h3>
+  <h3 style="margin:0; color:#1976d2;">Ordering Cycle</h3>
   <div class="small-note">
     <strong>Lead time:</strong> any order placed in <strong>Week N</strong> is delivered at the start of <strong>Week N+1</strong>.
-    (e.g., order 50kg in Week 1 → receive it in Week 2).
+    (e.g., order 10kg in Week 1 and then you receive it in Week 2).
   </div>
 
   <table>
@@ -130,16 +130,30 @@ th{
       </tr>
       <tr>
         <td><strong>3) Receive into inventory</strong></td>
-        <td>At the <strong>start of the next week</strong>, the delivered quantity is added to your café inventory.</td>
+        <td>At the <strong>start of the next week</strong>, the delivered quantity is added to your café inventory (including any remaining inventory from the week before).</td>
       </tr>
       <tr>
         <td><strong>4) Sell to customers</strong></td>
-        <td>Demand happens during the week; you sell what you can from inventory. Any shortage becomes lost sales, which causes you to lose money (as you still need to pay bills).</td>
+        <td>During the week, you sell the beans to customers (via them being processed into coffee). On average sell one kilo of beans for $200 (assuming 50 coffees sold for $4 using 20g of coffee).</td>
       </tr>
     </tbody>
   </table>
 </div>
-
+<!-- SLIDER -->
+  <div class="control-section">
+  <label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
+  <input
+    type="range"
+    id="orderQty"
+    min="0"
+    max="30"
+    step="1"
+    value="0"
+    oninput="document.getElementById('orderDisplay').innerText=this.value"
+  >
+  <button id="nextButton" onclick="nextWeek()">Next Week</button>
+</div>
+  
 <!-- MAIN LOG TABLE -->
 <table>
   <thead>
@@ -166,7 +180,6 @@ let inventory = 10;
 let totalProfit = 0;
 let pcost = 30;
 let scost = 200;
-let priceIncrease = false;
 const overhead = 3000;
 const supplierCap = 30;
 
@@ -267,8 +280,6 @@ function randNormal(mean, stdDev) {
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
 }
 
-// Render the pre-history table on page load
-renderPreHistory();
 </script>
 
 </body>
