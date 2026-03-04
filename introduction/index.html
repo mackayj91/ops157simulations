@@ -36,7 +36,6 @@
     background: #f0f4f8;
     color: var(--gray-800);
     min-height: 100vh;
-    padding: 0;
   }
 
   /* HEADER */
@@ -50,16 +49,8 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-  .header-left h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .header-left p {
-    font-size: 0.875rem;
-    opacity: 0.8;
-    margin-top: 2px;
-  }
+  .header-left h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+  .header-left p  { font-size: 0.875rem; opacity: 0.8; margin-top: 2px; }
   .week-badge {
     background: rgba(255,255,255,0.2);
     border: 1px solid rgba(255,255,255,0.3);
@@ -70,33 +61,20 @@
     white-space: nowrap;
   }
 
-  /* MAIN LAYOUT */
   .main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
-  /* TOAST NOTIFICATIONS */
+  /* TOAST */
   #toast-container {
-    position: fixed;
-    top: 20px; right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 360px;
+    position: fixed; top: 20px; right: 20px;
+    z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 360px;
   }
   .toast {
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.5;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    border-left: 4px solid;
-    animation: slideIn 0.3s ease;
-    cursor: pointer;
+    padding: 14px 18px; border-radius: 10px; font-size: 0.875rem;
+    font-weight: 500; line-height: 1.5; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border-left: 4px solid; animation: slideIn 0.3s ease; cursor: pointer;
   }
   .toast.warning { background:#fffbeb; border-color:#d97706; color:#92400e; }
   .toast.danger  { background:#fef2f2; border-color:#dc2626; color:#991b1b; }
-  .toast.success { background:#f0fdf4; border-color:#16a34a; color:#166534; }
   .toast.info    { background:#eff6ff; border-color:#2563eb; color:#1e40af; }
   @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
 
@@ -104,127 +82,48 @@
   .kpi-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 12px; margin-bottom: 20px;
   }
   .kpi-card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    box-shadow: var(--shadow);
-    border-top: 3px solid var(--blue);
+    background: white; border-radius: var(--radius);
+    padding: 16px 20px; box-shadow: var(--shadow); border-top: 3px solid var(--blue);
   }
   .kpi-card.green { border-top-color: var(--green); }
   .kpi-card.red   { border-top-color: var(--red); }
   .kpi-card.amber { border-top-color: var(--amber); }
-  .kpi-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--gray-400);
-    margin-bottom: 6px;
-  }
-  .kpi-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--gray-900);
-  }
+  .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); margin-bottom: 6px; }
+  .kpi-value { font-size: 1.5rem; font-weight: 700; color: var(--gray-900); }
   .kpi-value.positive { color: var(--green); }
   .kpi-value.negative { color: var(--red); }
 
-  /* DEMAND FORECAST */
+  /* FORECAST */
   .forecast-bar {
-    background: white;
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    background: white; border-radius: var(--radius); padding: 16px 20px;
+    box-shadow: var(--shadow); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
   }
-  .forecast-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--gray-600);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-  }
-  .forecast-hint {
-    font-size: 0.875rem;
-    color: var(--gray-800);
-    flex: 1;
-  }
-  .forecast-icon { font-size: 1.4rem; }
-  .forecast-range {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .forecast-pill {
-    padding: 4px 12px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
+  .forecast-label { font-size: 0.8rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  .forecast-hint  { font-size: 0.875rem; color: var(--gray-800); flex: 1; }
+  .forecast-icon  { font-size: 1.4rem; }
+  .forecast-pill  { padding: 4px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
   .forecast-pill.low  { background:#fef9c3; color:#854d0e; }
   .forecast-pill.mid  { background:#dbeafe; color:#1e40af; }
   .forecast-pill.high { background:#fee2e2; color:#991b1b; }
 
-  /* CONTROL PANEL */
+  /* CONTROLS */
   .control-panel {
-    background: white;
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
+    background: white; border-radius: var(--radius); padding: 20px 24px;
+    box-shadow: var(--shadow); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
   }
-  .control-panel label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--gray-600);
-    white-space: nowrap;
-  }
-  .order-input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    min-width: 200px;
-  }
-  input[type=range] {
-    flex: 1;
-    accent-color: var(--blue);
-    height: 6px;
-    cursor: pointer;
-  }
+  .control-panel label { font-weight: 600; font-size: 0.9rem; color: var(--gray-600); white-space: nowrap; }
+  .order-input-wrap { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; }
+  input[type=range] { flex: 1; accent-color: var(--blue); height: 6px; cursor: pointer; }
   .order-badge {
-    background: var(--blue-light);
-    color: var(--blue);
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 4px 14px;
-    border-radius: 8px;
-    min-width: 60px;
-    text-align: center;
+    background: var(--blue-light); color: var(--blue); font-weight: 700;
+    font-size: 1.1rem; padding: 4px 14px; border-radius: 8px; min-width: 60px; text-align: center;
   }
-  .btn {
-    padding: 10px 22px;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
+  .btn { padding: 10px 22px; border-radius: 8px; border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
   .btn-primary { background: var(--blue); color: white; }
   .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
   .btn-primary:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
@@ -233,301 +132,435 @@
   .supplier-note { font-size: 0.78rem; color: var(--gray-400); }
 
   /* CHARTS */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
   @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
-  .chart-card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-  }
-  .chart-card h3 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--gray-600);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 14px;
-  }
+  .chart-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .chart-card h3 { font-size: 0.875rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; }
 
   /* LOG TABLE */
-  .table-card {
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .table-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--gray-200);
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--gray-600);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .table-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 20px; }
+  .table-card-header { padding: 16px 20px; border-bottom: 1px solid var(--gray-200); font-weight: 600; font-size: 0.9rem; color: var(--gray-600); display: flex; justify-content: space-between; align-items: center; }
   .table-scroll { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  th {
-    background: var(--gray-50);
-    color: var(--gray-600);
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--gray-200);
-    white-space: nowrap;
-  }
+  th { background: var(--gray-50); color: var(--gray-600); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; border-bottom: 1px solid var(--gray-200); white-space: nowrap; }
   td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); text-align: center; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: var(--gray-50); }
-  .row-profit  { background: #f0fdf4; }
-  .row-loss    { background: #fef2f2; }
+  .row-profit { background: #f0fdf4; }
+  .row-loss   { background: #fef2f2; }
   .profit-positive { color: var(--green); font-weight: 700; }
   .profit-negative { color: var(--red);   font-weight: 700; }
 
-  /* RULES TABLE */
-  .rules-card {
+  /* RULES */
+  .rules-card { background: white; border-radius: var(--radius); padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+  .rules-card h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 10px; }
+  .rule-step { display: flex; gap: 10px; align-items: flex-start; background: var(--gray-50); border-radius: 8px; padding: 10px 12px; }
+  .rule-num { background: var(--blue); color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .rule-text strong { display: block; font-size: 0.82rem; margin-bottom: 2px; }
+  .rule-text span   { font-size: 0.78rem; color: var(--gray-600); }
+  .lead-note { font-size: 0.8rem; color: var(--gray-600); margin-top: 6px; }
+
+  /* ── DEBRIEF SCREEN ─────────────────────────────────── */
+  #debrief-screen {
+    display: none;
+    min-height: 100vh;
+    background: #f0f4f8;
+    padding-bottom: 40px;
+  }
+
+  .debrief-hero {
+    padding: 56px 24px 40px;
+    text-align: center;
+  }
+  .debrief-hero .result-icon { font-size: 4rem; margin-bottom: 16px; }
+  .debrief-hero h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; color: var(--gray-900); margin-bottom: 10px; }
+  .debrief-hero .subtitle { font-size: 1.05rem; color: var(--gray-600); max-width: 500px; margin: 0 auto 28px; }
+
+  .debrief-result-pill {
+    display: inline-block;
+    padding: 10px 28px;
+    border-radius: 999px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .debrief-result-pill.profit { background: var(--green-light); color: var(--green); border: 2px solid #bbf7d0; }
+  .debrief-result-pill.loss   { background: var(--red-light);   color: var(--red);   border: 2px solid #fecaca; }
+
+  .debrief-weeks-note { font-size: 0.85rem; color: var(--gray-400); margin-top: 4px; }
+
+  .debrief-body { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+  /* STAT ROW */
+  .debrief-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .debrief-stat {
     background: white;
     border-radius: var(--radius);
-    padding: 20px 24px;
+    padding: 16px;
     box-shadow: var(--shadow);
-    margin-bottom: 20px;
+    text-align: center;
   }
-  .rules-card h3 { font-size: 1rem; font-weight: 700; color: var(--blue); margin-bottom: 12px; }
-  .rules-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 10px;
-    margin-bottom: 10px;
+  .debrief-stat .ds-val { font-size: 1.4rem; font-weight: 700; color: var(--gray-900); }
+  .debrief-stat .ds-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); margin-top: 4px; }
+
+  /* REFLECTION CARD */
+  .reflection-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
   }
-  .rule-step {
+  .reflection-card .rc-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 6px;
+  }
+  .reflection-card .rc-sub {
+    font-size: 0.85rem;
+    color: var(--gray-400);
+    margin-bottom: 22px;
+  }
+
+  .strategy-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    border: 2px solid var(--gray-200);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    user-select: none;
+  }
+  .strategy-option:hover { border-color: var(--blue); background: var(--blue-light); transform: translateX(3px); }
+  .strategy-option.selected { border-color: var(--blue); background: var(--blue-light); }
+  .strategy-option.selected .so-check { background: var(--blue); border-color: var(--blue); }
+  .strategy-option.selected .so-check::after { display: block; }
+
+  .so-check {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border: 2px solid var(--gray-300); border-radius: 50%;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .so-check::after {
+    content: '';
+    display: none;
+    position: absolute;
+    top: 4px; left: 4px;
+    width: 10px; height: 10px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  .so-content .so-label { font-weight: 600; font-size: 0.95rem; color: var(--gray-900); }
+  .so-content .so-desc  { font-size: 0.82rem; color: var(--gray-600); margin-top: 3px; }
+
+  .discussion-note {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    color: #92400e;
+    margin-top: 4px;
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    background: var(--gray-50);
-    border-radius: 8px;
-    padding: 10px 12px;
   }
-  .rule-num {
-    background: var(--blue);
+  .discussion-note .dn-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+  /* REPLAY BUTTON */
+  .debrief-footer { text-align: center; margin-top: 32px; }
+  .btn-replay {
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
     color: white;
-    border-radius: 50%;
-    width: 22px; height: 22px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 1px;
+    padding: 14px 40px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.35);
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .rule-text strong { display: block; font-size: 0.82rem; margin-bottom: 2px; }
-  .rule-text span { font-size: 0.78rem; color: var(--gray-600); }
-  .lead-note { font-size: 0.8rem; color: var(--gray-600); margin-top: 6px; }
-
-  /* GAME OVER BANNER */
-  #game-over-banner {
-    display: none;
-    background: linear-gradient(135deg, #7f1d1d, #dc2626);
-    color: white;
-    border-radius: var(--radius);
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  #game-over-banner h2 { font-size: 1.5rem; margin-bottom: 8px; }
-  #game-over-banner p  { opacity: 0.9; margin-bottom: 16px; }
-
-  #win-banner {
-    display: none;
-    background: linear-gradient(135deg, #14532d, #16a34a);
-    color: white;
-    border-radius: var(--radius);
-    padding: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  #win-banner h2 { font-size: 1.5rem; margin-bottom: 8px; }
-  #win-banner p  { opacity: 0.9; margin-bottom: 16px; }
+  .btn-replay:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(37,99,235,0.45); }
+  .replay-note { font-size: 0.8rem; color: var(--gray-400); margin-top: 10px; }
 
   @media (max-width: 600px) {
     .header { padding: 16px; }
     .main   { padding: 12px; }
-    .control-panel { gap: 12px; }
+    .debrief-hero h2 { font-size: 1.5rem; }
+    .reflection-card { padding: 20px; }
+    .charts-grid { grid-template-columns: 1fr; }
     .kpi-value { font-size: 1.2rem; }
   }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <h1>☕ Wilde Cafe — Supply Chain Simulation</h1>
-    <p>Order coffee beans each week. Balance inventory costs vs. lost sales. Survive 30 weeks!</p>
-  </div>
-  <div class="week-badge">Week <span id="hdr-week">0</span> / 30</div>
-</div>
+<!-- ═══════════════════════════════════════════════════════
+     SIMULATION SCREEN
+════════════════════════════════════════════════════════ -->
+<div id="sim-screen">
 
-<div id="toast-container"></div>
-
-<div class="main">
-
-  <!-- GAME OVER / WIN BANNERS -->
-  <div id="game-over-banner">
-    <h2>🏦 Business Closed!</h2>
-    <p id="game-over-msg">The bank has shut you down. Better luck next time!</p>
-    <button class="btn btn-secondary" onclick="restartGame()">🔄 Try Again</button>
-  </div>
-  <div id="win-banner">
-    <h2>🎉 You made it to Week 30!</h2>
-    <p id="win-msg">Congratulations — note your total profit/loss below.</p>
-    <button class="btn btn-secondary" onclick="restartGame()">🔄 Play Again</button>
+  <div class="header">
+    <div class="header-left">
+      <h1>☕ Wilde Cafe — Supply Chain Simulation</h1>
+      <p>Order coffee beans each week. Balance inventory costs vs. lost sales. Survive 30 weeks!</p>
+    </div>
+    <div class="week-badge">Week <span id="hdr-week">0</span> / 30</div>
   </div>
 
-  <!-- HOW IT WORKS -->
-  <div class="rules-card">
-    <h3>How the process works</h3>
-    <div class="rules-grid">
-      <div class="rule-step">
-        <div class="rule-num">1</div>
-        <div class="rule-text"><strong>You order</strong><span>Choose kg to order — arrives next week (1-week lead time). Supplier max: 30 kg/week.</span></div>
+  <div id="toast-container"></div>
+
+  <div class="main">
+
+    <!-- RULES -->
+    <div class="rules-card">
+      <h3>How the process works</h3>
+      <div class="rules-grid">
+        <div class="rule-step">
+          <div class="rule-num">1</div>
+          <div class="rule-text"><strong>You order</strong><span>Choose kg to order — arrives next week (1-week lead time). Supplier max: 30 kg/week.</span></div>
+        </div>
+        <div class="rule-step">
+          <div class="rule-num">2</div>
+          <div class="rule-text"><strong>Supplier processes</strong><span>Takes 1 week to prepare and ship your order.</span></div>
+        </div>
+        <div class="rule-step">
+          <div class="rule-num">3</div>
+          <div class="rule-text"><strong>Receive inventory</strong><span>Delivery arrives at the start of the following week.</span></div>
+        </div>
+        <div class="rule-step">
+          <div class="rule-num">4</div>
+          <div class="rule-text"><strong>Customers buy</strong><span>Demand is random. Shortfalls = lost revenue. Excess = holding costs.</span></div>
+        </div>
       </div>
-      <div class="rule-step">
-        <div class="rule-num">2</div>
-        <div class="rule-text"><strong>Supplier processes</strong><span>Takes 1 week to prepare and ship your order.</span></div>
+      <p class="lead-note">💡 <strong>Tip:</strong> Demand averages ~25 kg/week (std dev ≈ 10 kg). Selling price: $200/kg · Purchase cost: $30/kg · Overhead: $3,000/week · Holding cost: 30% of purchase price per kg held.</p>
+    </div>
+
+    <!-- FORECAST -->
+    <div class="forecast-bar" id="forecast-bar">
+      <span class="forecast-icon">🔮</span>
+      <span class="forecast-label">Demand Forecast</span>
+      <span class="forecast-hint" id="forecast-hint">Start the simulation to receive demand hints each week.</span>
+      <div id="forecast-range"></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card blue">
+        <div class="kpi-label">Current Week</div>
+        <div class="kpi-value" id="kpi-week">0 / 30</div>
       </div>
-      <div class="rule-step">
-        <div class="rule-num">3</div>
-        <div class="rule-text"><strong>Receive inventory</strong><span>Delivery arrives at the start of the following week.</span></div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Inventory (kg)</div>
+        <div class="kpi-value" id="kpi-inventory">10 kg</div>
       </div>
-      <div class="rule-step">
-        <div class="rule-num">4</div>
-        <div class="rule-text"><strong>Customers buy</strong><span>Demand is random. Shortfalls = lost revenue. Excess = holding costs.</span></div>
+      <div class="kpi-card amber">
+        <div class="kpi-label">Incoming Next Week</div>
+        <div class="kpi-value" id="kpi-incoming">0 kg</div>
+      </div>
+      <div class="kpi-card" id="kpi-profit-card">
+        <div class="kpi-label">Cumulative Profit</div>
+        <div class="kpi-value" id="kpi-profit">$0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Last Week Demand</div>
+        <div class="kpi-value" id="kpi-demand">—</div>
       </div>
     </div>
-    <p class="lead-note">💡 <strong>Tip:</strong> Demand averages ~25 kg/week (std dev ≈ 10 kg). Selling price: $200/kg · Purchase cost: $30/kg · Overhead: $3,000/week · Holding cost: 30% of purchase price per kg held.</p>
+
+    <!-- CONTROLS -->
+    <div class="control-panel">
+      <label>Order for next week:</label>
+      <div class="order-input-wrap">
+        <input type="range" id="orderQty" min="0" max="30" step="1" value="0"
+          oninput="document.getElementById('orderDisplay').innerText=this.value+' kg'">
+        <div class="order-badge" id="orderDisplay">0 kg</div>
+      </div>
+      <span class="supplier-note">max 30 kg</span>
+      <button class="btn btn-primary" id="nextButton" onclick="nextWeek()">Next Week →</button>
+      <button class="btn btn-secondary" onclick="restartGame()">🔄 Restart</button>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>📈 Weekly & Cumulative Profit/Loss</h3>
+        <canvas id="plChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>📦 Inventory Level Over Time</h3>
+        <canvas id="invChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- LOG TABLE -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <span>📋 Weekly Log</span>
+        <span id="log-count" style="font-size:0.8rem;color:var(--gray-400);">No weeks played yet</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Week</th><th>Demand (kg)</th><th>Sales (kg)</th>
+              <th>Opening Inv.</th><th>Ordered</th><th>Received</th>
+              <th>Closing Inv.</th><th>Revenue</th><th>Cost</th><th>Profit/Loss</th>
+            </tr>
+          </thead>
+          <tbody id="log"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /sim-screen -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     DEBRIEF SCREEN
+════════════════════════════════════════════════════════ -->
+<div id="debrief-screen">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>☕ Wilde Cafe — Supply Chain Simulation</h1>
+      <p>Simulation complete</p>
+    </div>
+    <div class="week-badge" id="debrief-week-badge">Week — / 30</div>
   </div>
 
-  <!-- DEMAND FORECAST HINT -->
-  <div class="forecast-bar" id="forecast-bar">
-    <span class="forecast-icon">🔮</span>
-    <span class="forecast-label">Demand Forecast</span>
-    <span class="forecast-hint" id="forecast-hint">Start the simulation to receive demand hints each week.</span>
-    <div class="forecast-range" id="forecast-range"></div>
+  <div class="debrief-hero">
+    <div class="result-icon" id="debrief-icon">🎉</div>
+    <h2 id="debrief-headline">Simulation Complete</h2>
+    <p class="subtitle" id="debrief-subtitle">Here's how Wilde Cafe performed under your management.</p>
+    <div class="debrief-result-pill" id="debrief-pill">$0</div>
+    <div class="debrief-weeks-note" id="debrief-weeks-note"></div>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="kpi-grid">
-    <div class="kpi-card blue">
-      <div class="kpi-label">Current Week</div>
-      <div class="kpi-value" id="kpi-week">0 / 30</div>
-    </div>
-    <div class="kpi-card amber">
-      <div class="kpi-label">Inventory (kg)</div>
-      <div class="kpi-value" id="kpi-inventory">10 kg</div>
-    </div>
-    <div class="kpi-card amber">
-      <div class="kpi-label">Incoming Next Week</div>
-      <div class="kpi-value" id="kpi-incoming">0 kg</div>
-    </div>
-    <div class="kpi-card" id="kpi-profit-card">
-      <div class="kpi-label">Cumulative Profit</div>
-      <div class="kpi-value" id="kpi-profit">$0</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Last Week Demand</div>
-      <div class="kpi-value" id="kpi-demand">—</div>
-    </div>
-  </div>
+  <div class="debrief-body">
 
-  <!-- CONTROL PANEL -->
-  <div class="control-panel">
-    <label>Order for next week:</label>
-    <div class="order-input-wrap">
-      <input type="range" id="orderQty" min="0" max="30" step="1" value="0"
-        oninput="document.getElementById('orderDisplay').innerText=this.value + ' kg'">
-      <div class="order-badge" id="orderDisplay">0 kg</div>
+    <!-- QUICK STATS -->
+    <div class="debrief-stats">
+      <div class="debrief-stat">
+        <div class="ds-val" id="ds-weeks">—</div>
+        <div class="ds-lbl">Weeks Survived</div>
+      </div>
+      <div class="debrief-stat">
+        <div class="ds-val" id="ds-revenue">—</div>
+        <div class="ds-lbl">Total Revenue</div>
+      </div>
+      <div class="debrief-stat">
+        <div class="ds-val" id="ds-cost">—</div>
+        <div class="ds-lbl">Total Costs</div>
+      </div>
+      <div class="debrief-stat">
+        <div class="ds-val" id="ds-shortfalls">—</div>
+        <div class="ds-lbl">Weeks w/ Shortage</div>
+      </div>
+      <div class="debrief-stat">
+        <div class="ds-val" id="ds-profitable">—</div>
+        <div class="ds-lbl">Profitable Weeks</div>
+      </div>
     </div>
-    <span class="supplier-note">max 30 kg</span>
-    <button class="btn btn-primary" id="nextButton" onclick="nextWeek()">Next Week →</button>
-    <button class="btn btn-secondary" onclick="restartGame()">🔄 Restart</button>
-  </div>
 
-  <!-- CHARTS -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>📈 Weekly & Cumulative Profit/Loss</h3>
-      <canvas id="plChart" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>📦 Inventory Level Over Time</h3>
-      <canvas id="invChart" height="200"></canvas>
-    </div>
-  </div>
+    <!-- REFLECTION -->
+    <div class="reflection-card">
+      <div class="rc-title">🤔 How did you approach the simulation?</div>
+      <div class="rc-sub">Select the option that best describes your strategy — your tutor will use these for a class discussion.</div>
 
-  <!-- LOG TABLE -->
-  <div class="table-card">
-    <div class="table-card-header">
-      <span>📋 Weekly Log</span>
-      <span id="log-count" style="font-size:0.8rem;color:var(--gray-400);">No weeks played yet</span>
-    </div>
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Week</th>
-            <th>Demand (kg)</th>
-            <th>Sales (kg)</th>
-            <th>Opening Inv.</th>
-            <th>Ordered</th>
-            <th>Received</th>
-            <th>Closing Inv.</th>
-            <th>Revenue</th>
-            <th>Cost</th>
-            <th>Profit/Loss</th>
-          </tr>
-        </thead>
-        <tbody id="log"></tbody>
-      </table>
-    </div>
-  </div>
+      <div class="strategy-option" onclick="selectStrategy(this, 'forecast')">
+        <div class="so-check"></div>
+        <div class="so-content">
+          <div class="so-label">I tried to match supply with demand based on the forecast</div>
+          <div class="so-desc">You used the weekly demand hints to guide your ordering decisions.</div>
+        </div>
+      </div>
 
-</div><!-- /main -->
+      <div class="strategy-option" onclick="selectStrategy(this, 'random')">
+        <div class="so-check"></div>
+        <div class="so-content">
+          <div class="so-label">I'll be honest — I was putting in fairly random values</div>
+          <div class="so-desc">No clear system, just experimenting to see what happened.</div>
+        </div>
+      </div>
+
+      <div class="strategy-option" onclick="selectStrategy(this, 'lost')">
+        <div class="so-check"></div>
+        <div class="so-content">
+          <div class="so-label">I had no idea what I was doing the whole time</div>
+          <div class="so-desc">The simulation felt confusing and it was hard to know what to optimise for.</div>
+        </div>
+      </div>
+
+      <div class="strategy-option" onclick="selectStrategy(this, 'other')">
+        <div class="so-check"></div>
+        <div class="so-content">
+          <div class="so-label">I had another strategy I used</div>
+          <div class="so-desc">You developed your own approach — be ready to share it with the class!</div>
+        </div>
+      </div>
+
+      <div class="discussion-note">
+        <span class="dn-icon">💬</span>
+        <span>No need to submit — your tutor will ask the class to share their answers out loud. Think about <em>why</em> your strategy led to the result it did.</span>
+      </div>
+    </div>
+
+    <!-- REPLAY -->
+    <div class="debrief-footer">
+      <button class="btn-replay" onclick="restartGame()">🔄 Play Again</button>
+      <div class="replay-note">Restarting resets all data and starts a fresh 30-week simulation.</div>
+    </div>
+
+  </div>
+</div><!-- /debrief-screen -->
+
 
 <script>
 // ── State ──────────────────────────────────────────────────
 let week, inventory, totalProfit, incomingNextWeek;
-let warned7000, warned15000, closedBusiness, gameOver;
+let warned7000, warned15000, gameOver;
 let plWeekData, weeklyProfitData, cumulativeData, inventoryData;
+let totalRevenue, totalCost, shortfallWeeks, profitableWeeks;
 let plChart, invChart;
 
 const PCOST = 30, SCOST = 200, OVERHEAD = 3000, SUPPLIER_CAP = 30;
 
 function initState() {
   week = 0; inventory = 10; totalProfit = 0; incomingNextWeek = 0;
-  warned7000 = false; warned15000 = false; closedBusiness = false; gameOver = false;
+  warned7000 = false; warned15000 = false; gameOver = false;
   plWeekData = []; weeklyProfitData = []; cumulativeData = []; inventoryData = [];
+  totalRevenue = 0; totalCost = 0; shortfallWeeks = 0; profitableWeeks = 0;
 }
 
-// ── Toast Notifications ────────────────────────────────────
+// ── Toast ──────────────────────────────────────────────────
 function showToast(msg, type = 'info') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = msg;
-  toast.onclick = () => toast.remove();
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 6000);
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = msg;
+  t.onclick = () => t.remove();
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 6000);
 }
 
-// ── Demand Forecast Hint ───────────────────────────────────
+// ── Forecast ───────────────────────────────────────────────
 function updateForecast() {
   const hints = [
     { text: "Market signals look normal — average demand expected.", icon: "🟡", tag: "Mid (15–35 kg)", cls: "mid" },
@@ -540,226 +573,207 @@ function updateForecast() {
   ];
   const h = hints[Math.floor(Math.random() * hints.length)];
   document.getElementById('forecast-hint').textContent = `${h.icon} ${h.text}`;
-  document.getElementById('forecast-range').innerHTML =
-    `<span class="forecast-pill ${h.cls}">${h.tag}</span>`;
+  document.getElementById('forecast-range').innerHTML = `<span class="forecast-pill ${h.cls}">${h.tag}</span>`;
 }
 
 // ── Charts ─────────────────────────────────────────────────
 function buildCharts() {
-  if (plChart)  { plChart.destroy();  }
-  if (invChart) { invChart.destroy(); }
+  if (plChart)  plChart.destroy();
+  if (invChart) invChart.destroy();
 
   plChart = new Chart(document.getElementById('plChart'), {
     type: 'bar',
     data: {
       labels: [],
       datasets: [
-        {
-          type: 'bar',
-          label: 'Weekly P&L ($)',
-          data: [],
-          backgroundColor: ctx => ctx.raw >= 0 ? 'rgba(22,163,74,0.5)' : 'rgba(220,38,38,0.5)',
-          borderColor:     ctx => ctx.raw >= 0 ? '#16a34a' : '#dc2626',
-          borderWidth: 1,
-          yAxisID: 'y',
-        },
-        {
-          type: 'line',
-          label: 'Cumulative ($)',
-          data: [],
-          borderColor: '#2563eb',
-          backgroundColor: 'rgba(37,99,235,0.08)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 3,
-          borderWidth: 2,
-          yAxisID: 'y',
-        }
+        { type:'bar',  label:'Weekly P&L ($)',   data:[], backgroundColor: ctx => ctx.raw >= 0 ? 'rgba(22,163,74,0.5)' : 'rgba(220,38,38,0.5)', borderColor: ctx => ctx.raw >= 0 ? '#16a34a' : '#dc2626', borderWidth:1, yAxisID:'y' },
+        { type:'line', label:'Cumulative ($)',    data:[], borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.08)', fill:true, tension:0.3, pointRadius:3, borderWidth:2, yAxisID:'y' }
       ]
     },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { labels: { font: { size: 11 } } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-        y: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 10 }, callback: v => '$'+v.toLocaleString() } }
-      }
-    }
+    options: { responsive:true, interaction:{mode:'index',intersect:false}, plugins:{legend:{labels:{font:{size:11}}}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f3f4f6'},ticks:{font:{size:10},callback:v=>'$'+v.toLocaleString()}} } }
   });
 
   invChart = new Chart(document.getElementById('invChart'), {
     type: 'line',
     data: {
       labels: [],
-      datasets: [{
-        label: 'Inventory (kg)',
-        data: [],
-        borderColor: '#d97706',
-        backgroundColor: 'rgba(217,119,6,0.1)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 4,
-        borderWidth: 2,
-      }]
+      datasets: [{ label:'Inventory (kg)', data:[], borderColor:'#d97706', backgroundColor:'rgba(217,119,6,0.1)', fill:true, tension:0.3, pointRadius:4, borderWidth:2 }]
     },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { font: { size: 11 } } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-        y: { grid: { color: '#f3f4f6' }, min: 0, ticks: { font: { size: 10 }, callback: v => v+'kg' } }
-      }
-    }
+    options: { responsive:true, plugins:{legend:{labels:{font:{size:11}}}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f3f4f6'},min:0,ticks:{font:{size:10},callback:v=>v+'kg'}} } }
   });
 }
 
 function updateCharts() {
   const labels = plWeekData.map(w => 'W'+w);
-
   plChart.data.labels = labels;
   plChart.data.datasets[0].data = weeklyProfitData;
   plChart.data.datasets[1].data = cumulativeData;
   plChart.update();
-
   invChart.data.labels = labels;
   invChart.data.datasets[0].data = inventoryData;
   invChart.update();
 }
 
-// ── Main Game Logic ────────────────────────────────────────
+// ── Debrief ────────────────────────────────────────────────
+function showDebrief(reason) {
+  document.getElementById('sim-screen').style.display = 'none';
+  const db = document.getElementById('debrief-screen');
+  db.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const won = reason === 'win';
+  document.getElementById('debrief-icon').textContent      = won ? '🎉' : '🏦';
+  document.getElementById('debrief-headline').textContent  = won ? 'You made it to Week 30!' : 'The Bank Closed Wilde Cafe';
+  document.getElementById('debrief-subtitle').textContent  = won
+    ? 'Congratulations — here\'s how Wilde Cafe performed under your management.'
+    : 'Your debt exceeded $20,000 and the bank stepped in. Here\'s how it unfolded.';
+  document.getElementById('debrief-week-badge').textContent = `Week ${week} / 30`;
+  document.getElementById('debrief-weeks-note').textContent = won
+    ? 'Full simulation completed'
+    : `Closed after ${week} week${week !== 1 ? 's' : ''}`;
+
+  const pill = document.getElementById('debrief-pill');
+  const profitLabel = '$' + Math.abs(totalProfit).toLocaleString('en', {maximumFractionDigits:0});
+  pill.textContent  = (totalProfit >= 0 ? '✅ Profit: +' : '❌ Loss: −') + profitLabel;
+  pill.className    = 'debrief-result-pill ' + (totalProfit >= 0 ? 'profit' : 'loss');
+
+  // Stats
+  document.getElementById('ds-weeks').textContent      = week;
+  document.getElementById('ds-revenue').textContent    = '$' + totalRevenue.toLocaleString('en', {maximumFractionDigits:0});
+  document.getElementById('ds-cost').textContent       = '$' + totalCost.toLocaleString('en', {maximumFractionDigits:0});
+  document.getElementById('ds-shortfalls').textContent = shortfallWeeks;
+  document.getElementById('ds-profitable').textContent = profitableWeeks;
+
+  // Reset strategy selection
+  document.querySelectorAll('.strategy-option').forEach(el => el.classList.remove('selected'));
+}
+
+function selectStrategy(el, key) {
+  document.querySelectorAll('.strategy-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── Game Loop ──────────────────────────────────────────────
 function nextWeek() {
   if (gameOver) return;
   week++;
 
-  const receivedThisWeek = incomingNextWeek;
-  const startingInventory = inventory;
+  const receivedThisWeek   = incomingNextWeek;
+  const startingInventory  = inventory;
   inventory += receivedThisWeek;
 
   const demand = Math.round(Math.max(5, Math.min(60, randNormal(25, 10))) / 5) * 5;
-  const sold = Math.min(demand, inventory);
-  inventory -= sold;
+  const sold   = Math.min(demand, inventory);
+  inventory   -= sold;
 
-  const revenue = sold * SCOST;
+  const revenue             = sold * SCOST;
   const inventoryHoldingCost = inventory * PCOST * 0.3;
-  const cost = (receivedThisWeek * PCOST) + OVERHEAD + inventoryHoldingCost;
-  const profit = revenue - cost;
-  totalProfit += profit;
+  const cost                = (receivedThisWeek * PCOST) + OVERHEAD + inventoryHoldingCost;
+  const profit              = revenue - cost;
+
+  totalProfit   += profit;
+  totalRevenue  += revenue;
+  totalCost     += cost;
+  if (sold < demand)  shortfallWeeks++;
+  if (profit >= 0)    profitableWeeks++;
 
   const orderPlacedThisWeek = parseInt(document.getElementById('orderQty').value, 10) || 0;
   incomingNextWeek = Math.min(orderPlacedThisWeek, SUPPLIER_CAP);
 
-  // Toasts instead of alerts
+  // Toasts
   if (totalProfit <= -7000 && !warned7000) {
-    showToast('⚠️ <strong>Financial Distress:</strong> You\'re over $7,000 in debt. Try to recover before it\'s too late!', 'warning');
+    showToast('⚠️ <strong>Financial Distress:</strong> Over $7,000 in debt. Try to recover before it\'s too late!', 'warning');
     warned7000 = true;
   }
   if (totalProfit <= -15000 && !warned15000) {
     showToast('🚨 <strong>Final Warning:</strong> The bank will close your business if debt reaches $20,000!', 'danger');
     warned15000 = true;
   }
-  if (profit < 0) {
-    if (demand > sold) showToast(`📉 Week ${week}: You had a shortage of ${demand - sold} kg — lost sales cost you revenue.`, 'warning');
+  if (sold < demand) {
+    showToast(`📉 Week ${week}: Shortage of ${demand - sold} kg — ${demand - sold} kg in lost sales.`, 'warning');
   }
 
-  // Update KPIs
-  document.getElementById('hdr-week').innerText = week;
-  document.getElementById('kpi-week').innerText = `${week} / 30`;
+  // KPIs
+  document.getElementById('hdr-week').innerText      = week;
+  document.getElementById('kpi-week').innerText      = `${week} / 30`;
   document.getElementById('kpi-inventory').innerText = `${inventory} kg`;
-  document.getElementById('kpi-incoming').innerText = `${incomingNextWeek} kg`;
-  document.getElementById('kpi-demand').innerText = `${demand} kg`;
-
+  document.getElementById('kpi-incoming').innerText  = `${incomingNextWeek} kg`;
+  document.getElementById('kpi-demand').innerText    = `${demand} kg`;
   const kpiP = document.getElementById('kpi-profit');
-  const kpiCard = document.getElementById('kpi-profit-card');
-  kpiP.innerText = '$' + totalProfit.toLocaleString('en', {minimumFractionDigits:0, maximumFractionDigits:0});
-  kpiP.className = 'kpi-value ' + (totalProfit >= 0 ? 'positive' : 'negative');
-  kpiCard.className = 'kpi-card ' + (totalProfit >= 0 ? 'green' : 'red');
+  kpiP.innerText   = '$' + totalProfit.toLocaleString('en', {minimumFractionDigits:0, maximumFractionDigits:0});
+  kpiP.className   = 'kpi-value ' + (totalProfit >= 0 ? 'positive' : 'negative');
+  document.getElementById('kpi-profit-card').className = 'kpi-card ' + (totalProfit >= 0 ? 'green' : 'red');
 
-  // Log row
+  // Log row (newest first)
   const row = document.createElement('tr');
-  const pc = profit >= 0 ? 'profit-positive' : 'profit-negative';
   row.className = profit >= 0 ? 'row-profit' : 'row-loss';
   row.innerHTML = `
-    <td><strong>${week}</strong></td>
-    <td>${demand}</td>
+    <td><strong>${week}</strong></td><td>${demand}</td>
     <td>${sold}${sold < demand ? ' ⚠️' : ''}</td>
-    <td>${startingInventory}</td>
-    <td>${orderPlacedThisWeek}</td>
-    <td>${receivedThisWeek}</td>
-    <td>${inventory}</td>
-    <td>$${revenue.toLocaleString()}</td>
-    <td>$${cost.toFixed(0)}</td>
-    <td class="${pc}">$${profit.toFixed(0)}</td>
+    <td>${startingInventory}</td><td>${orderPlacedThisWeek}</td>
+    <td>${receivedThisWeek}</td><td>${inventory}</td>
+    <td>$${revenue.toLocaleString()}</td><td>$${cost.toFixed(0)}</td>
+    <td class="${profit >= 0 ? 'profit-positive' : 'profit-negative'}">$${profit.toFixed(0)}</td>
   `;
-  document.getElementById('log').prepend(row); // newest first
+  document.getElementById('log').prepend(row);
   document.getElementById('log-count').innerText = `${week} week${week !== 1 ? 's' : ''} played`;
 
-  // Chart data
+  // Charts
   plWeekData.push(week);
   weeklyProfitData.push(Math.round(profit));
   cumulativeData.push(Math.round(totalProfit));
   inventoryData.push(inventory);
   updateCharts();
 
-  // Reset slider
+  // Reset controls
   document.getElementById('orderQty').value = 0;
   document.getElementById('orderDisplay').innerText = '0 kg';
-
-  // Update forecast for next week
   updateForecast();
 
   // End conditions
-  if (totalProfit <= -20000 && !closedBusiness) {
-    closedBusiness = true; gameOver = true;
+  if (totalProfit <= -20000) {
+    gameOver = true;
     document.getElementById('nextButton').disabled = true;
-    document.getElementById('game-over-banner').style.display = 'block';
-    document.getElementById('game-over-msg').innerText =
-      `The bank has closed Wilde Cafe with a total loss of $${Math.abs(totalProfit).toLocaleString()}. Better luck next time!`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => showDebrief('bankrupt'), 600);
     return;
   }
-
   if (week === 30) {
     gameOver = true;
     document.getElementById('nextButton').disabled = true;
-    document.getElementById('win-banner').style.display = 'block';
-    const outcome = totalProfit >= 0
-      ? `You finished with a profit of $${totalProfit.toLocaleString('en', {maximumFractionDigits:0})}. Well done!`
-      : `You finished with a loss of $${Math.abs(totalProfit).toLocaleString('en', {maximumFractionDigits:0})}. See if you can do better next time!`;
-    document.getElementById('win-msg').innerText = outcome;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => showDebrief('win'), 600);
   }
 }
 
 // ── Restart ────────────────────────────────────────────────
 function restartGame() {
   initState();
+  document.getElementById('debrief-screen').style.display  = 'none';
+  document.getElementById('sim-screen').style.display      = 'block';
   document.getElementById('log').innerHTML = '';
-  document.getElementById('log-count').innerText = 'No weeks played yet';
-  document.getElementById('hdr-week').innerText = '0';
-  document.getElementById('kpi-week').innerText = '0 / 30';
-  document.getElementById('kpi-inventory').innerText = '10 kg';
-  document.getElementById('kpi-incoming').innerText = '0 kg';
-  document.getElementById('kpi-demand').innerText = '—';
-  document.getElementById('kpi-profit').innerText = '$0';
-  document.getElementById('kpi-profit').className = 'kpi-value';
-  document.getElementById('kpi-profit-card').className = 'kpi-card';
-  document.getElementById('orderQty').value = 0;
-  document.getElementById('orderDisplay').innerText = '0 kg';
-  document.getElementById('nextButton').disabled = false;
-  document.getElementById('game-over-banner').style.display = 'none';
-  document.getElementById('win-banner').style.display = 'none';
-  document.getElementById('forecast-hint').innerText = 'Start the simulation to receive demand hints each week.';
-  document.getElementById('forecast-range').innerHTML = '';
-  document.getElementById('toast-container').innerHTML = '';
+  document.getElementById('log-count').innerText           = 'No weeks played yet';
+  document.getElementById('hdr-week').innerText            = '0';
+  document.getElementById('kpi-week').innerText            = '0 / 30';
+  document.getElementById('kpi-inventory').innerText       = '10 kg';
+  document.getElementById('kpi-incoming').innerText        = '0 kg';
+  document.getElementById('kpi-demand').innerText          = '—';
+  document.getElementById('kpi-profit').innerText          = '$0';
+  document.getElementById('kpi-profit').className          = 'kpi-value';
+  document.getElementById('kpi-profit-card').className     = 'kpi-card';
+  document.getElementById('orderQty').value                = 0;
+  document.getElementById('orderDisplay').innerText        = '0 kg';
+  document.getElementById('nextButton').disabled           = false;
+  document.getElementById('forecast-hint').innerText       = 'Start the simulation to receive demand hints each week.';
+  document.getElementById('forecast-range').innerHTML      = '';
+  document.getElementById('toast-container').innerHTML     = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   buildCharts();
 }
 
-function randNormal(mean, stdDev) {
+function randNormal(mean, sd) {
   let u = 0, v = 0;
   while (u === 0) u = Math.random();
   while (v === 0) v = Math.random();
-  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * stdDev + mean;
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * sd + mean;
 }
 
 // ── Init ───────────────────────────────────────────────────
