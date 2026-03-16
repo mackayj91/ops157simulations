@@ -1,125 +1,639 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wilde Cafe Simulation - Chaos! Fear! Uncertainty!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Wilde Cafe – Challenges</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-body { font-family: sans-serif; background: #f7f4ef; max-width: 1000px; margin: auto; padding: 20px; }
-h2 { text-align: center; }
-p.instructions { background: #e8f0fe; padding: 12px; border-left: 5px solid #1976d2; }
-table { border-collapse: collapse; margin-top: 20px; font-size: 14px; width: 100%; }
-th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
-th { background: #1976d2; color: #fff; }
-button { background: #5d4037; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-button:hover { background: #3e2723; }
-input[type=range] { width: 250px; }
-.control-section { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+:root {
+  --blue:    #1a5fa8;
+  --blue-lt: #e8f0fa;
+  --green:   #2e7d32;
+  --red:     #c62828;
+  --orange:  #e65100;
+  --orange-lt: #fff3e0;
+  --bg:      #f5f2ec;
+  --card:    #ffffff;
+  --border:  #e0dbd2;
+  --text:    #1a1a1a;
+  --muted:   #666;
+  --radius:  12px;
+  --shadow:  0 2px 10px rgba(0,0,0,0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.55;
+  padding: 0 0 40px;
+}
+
+.header {
+  background: var(--blue);
+  color: #fff;
+  padding: 20px 16px 18px;
+  text-align: center;
+}
+.header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+  margin-bottom: 4px;
+}
+.header p { font-size: 13px; opacity: 0.85; }
+
+.wrap { padding: 14px 14px 0; max-width: 680px; margin: 0 auto; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.intro { font-size: 14px; color: #333; }
+.intro p { margin-bottom: 8px; }
+.category-list {
+  background: var(--blue-lt);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-top: 6px;
+}
+.category-list strong { display: block; margin-bottom: 5px; color: var(--blue); }
+.category-list span {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 12px;
+  margin: 2px 2px 2px 0;
+}
+
+.steps { }
+.step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+.step-text strong { color: var(--blue); }
+
+#challenge-banner {
+  display: none;
+  background: var(--orange-lt);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#challenge-banner strong {
+  display: block;
+  color: var(--orange);
+  font-size: 15px;
+  margin-bottom: 3px;
+}
+#challenge-banner p { font-size: 14px; color: #4a2c00; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 11px 12px;
+  text-align: center;
+}
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.stat-value { font-size: 20px; font-weight: 600; color: var(--blue); }
+.stat-value.pos { color: var(--green); }
+.stat-value.neg { color: var(--red); }
+.stat-wide { grid-column: 1 / -1; }
+
+.order-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px 14px;
+  margin-bottom: 14px;
+}
+.order-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--blue);
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  accent-color: var(--blue);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--blue);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.order-qty-display {
+  min-width: 48px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.next-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.2px;
+}
+.next-btn:active { transform: scale(0.98); background: #14498a; }
+.next-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+.log-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+.week-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border-left: 4px solid transparent;
+  font-size: 14px;
+}
+.week-card.challenge  { border-left-color: var(--orange); background: #fffaf5; }
+.week-card.profit-wk  { border-left-color: var(--green); }
+.week-card.loss-wk    { border-left-color: var(--red); }
+
+.week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.week-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  color: var(--blue);
+}
+.week-challenge-tag {
+  font-size: 11px;
+  background: var(--orange);
+  color: #fff;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+.week-pl { font-size: 18px; font-weight: 700; }
+.week-pl.pos { color: var(--green); }
+.week-pl.neg { color: var(--red); }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+.wg-item { font-size: 12px; color: var(--muted); }
+.wg-item strong { display: block; font-size: 14px; color: var(--text); }
+
+canvas { width: 100% !important; height: auto; display: block; border-radius: 8px; }
+
+details { margin-bottom: 14px; }
+summary {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 13px 14px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--blue);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '▾'; font-size: 14px; }
+details[open] summary { border-radius: var(--radius) var(--radius) 0 0; margin-bottom: 0; }
+details[open] summary::after { content: '▴'; }
+.details-inner {
+  background: var(--card);
+  border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 14px 14px;
+  font-size: 14px;
+}
+
+@media (max-width: 380px) {
+  .week-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
-<h2>Wilde Cafe Simulation - Chaos! Fear! Uncertainty!</h2>
-<p class="instructions">
-Welcome back to another week of managing Wilde Cafe.<br>
-Your goal for this week is survive 26 chaotic weeks: you have recently come across the idea of 'supply chain challenges', and magically it means your business is getting hit by all of these. Ride the wave of uncertainty, and consider what this tells us about something as 'basic' as managing a single product.<br>.<br>
-</p>
 
-<div class="control-section">
-<label>Order kg for next week: <span id="orderDisplay">0</span> kg</label>
-<input type="range" id="orderQty" min="0" max="50" step="5" value="0" oninput="orderDisplay.innerText=this.value">
-<button id="nextButton">Next Week</button>
+<div class="header">
+  <h1>Wilde Cafe ☕</h1>
+  <p>Supply Chain Challenges Simulation</p>
 </div>
 
-<table>
-<thead><tr><th>Week</th><th>Demand</th><th>Ordered</th><th>Received</th><th>Sold</th><th>Final Inventory</th><th>Lost Sales</th><th>Waste Disposal Cost</th><th>Profit/Loss</th></tr></thead>
-<tbody id="log"></tbody>
-</table>
+<div class="wrap">
+
+  <details>
+    <summary>How to play</summary>
+    <div class="details-inner intro">
+      <p>You manage coffee bean orders between Wilde Cafe and their supplier. Real-world disruptions will hit at unexpected points — minimise inventory while staying profitable.</p>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Order</strong> — decide how many kg to order (delivered next week, max 30 kg).</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Supplier processes</strong> — 1-week lead time, up to 30 kg/week.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Receive</strong> — delivery added to stock at the start of the following week.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Sell</strong> — shortages mean lost sales while overheads still apply.</div></div>
+      </div>
+      <div class="category-list">
+        <strong>After the sim, match each challenge to a category:</strong>
+        <span>Competitors</span>
+        <span>Volatile environment</span>
+        <span>Robustness</span>
+        <span>Supply Chain Fads</span>
+        <span>Supply disruptions</span>
+        <span>Lack of good people</span>
+        <span>Sustainability</span>
+      </div>
+    </div>
+  </details>
+
+  <div id="challenge-banner">
+    <strong id="challenge-title">⚡ Challenge Event</strong>
+    <p id="challenge-desc"></p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="stat-label">Week</div>
+      <div class="stat-value" id="stat-week">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Inventory (kg)</div>
+      <div class="stat-value" id="stat-inventory">10</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Demand this week</div>
+      <div class="stat-value" id="stat-demand">–</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Incoming next week</div>
+      <div class="stat-value" id="stat-incoming">0</div>
+    </div>
+    <div class="stat stat-wide">
+      <div class="stat-label">Cumulative Profit / Loss</div>
+      <div class="stat-value" id="stat-profit">$0.00</div>
+    </div>
+  </div>
+
+  <div class="order-card">
+    <div class="order-label">Order kg for next week</div>
+    <div class="slider-row">
+      <input type="range" id="orderQty" min="0" max="30" step="1" value="0"
+        oninput="document.getElementById('orderDisplay').textContent=this.value;document.getElementById('stat-incoming').textContent=this.value">
+      <div class="order-qty-display" id="orderDisplay">0</div>
+    </div>
+    <button class="next-btn" id="nextButton" onclick="nextWeek()">Next Week ➜</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Profit / Loss by Week</div>
+    <canvas id="plChart"></canvas>
+  </div>
+
+  <div class="log-title">Weekly Log</div>
+  <div id="log"></div>
+
+</div>
 
 <script>
-let week = 0;
-let inventory = 20;
-let totalProfit = 0;
-let pcost = 40;
-let scost = 80;
-let overhead = 3000;
-let supplierCap = 50;
-let inventoryAges = Array(4).fill(0);
-let competitorEffect = false;
-let forcedClosureWeek = -1;
+let week = 0, inventory = 10, totalProfit = 0, incomingNextWeek = 0;
+const pcost = 30, scost = 200, overhead = 3000, supplierCap = 30;
+let warned7000 = false, warned15000 = false, closedBusiness = false;
+let permanentDemandMultiplier = 1.0;
+let forcedClosureActive = false;
+const plWeeks = [], plValues = [];
 
-function firstWeekAutoRun() {
-    document.getElementById('orderQty').value = 20;
-    document.getElementById('orderDisplay').innerText = 20;
-    nextWeek();
-}
+const ALL_CHALLENGES = [
+  { id:"supplier_strike",  title:"Supplier Strike",               desc:"Supplier strike — deliveries halved this week.",                                            effect: s => { s.deliveryMultiplier = 0.5; } },
+  { id:"local_festival",   title:"Local Festival",                desc:"A local festival unexpectedly spikes demand — doubled this week!",                          effect: s => { s.demandMultiplier = 2.0; } },
+  { id:"flood_stock",      title:"Flood Damages Stock",           desc:"Flooding damages your warehouse — 50% of current inventory must be disposed of.",            effect: s => { s.inventoryLossFraction = 0.5; } },
+  { id:"fuel_cost",        title:"Fuel Cost Increase",            desc:"Rising fuel costs raise overhead by $1,000 this week.",                                     effect: s => { s.extraOverhead = 1000; } },
+  { id:"tiktok_trend",     title:"Viral TikTok Trend",            desc:"A viral trend causes a demand surge — demand triples this week!",                           effect: s => { s.demandMultiplier = 3.0; } },
+  { id:"supplier_quality", title:"Supplier Quality Issue",        desc:"Quality issue forces disposal of all incoming inventory — nothing received this week.",     effect: s => { s.deliveryMultiplier = 0.0; } },
+  { id:"new_competitors",  title:"New Competitors Emerge",        desc:"New competitors permanently reduce demand by 30% from this week onwards.",                   effect: s => { s.permanentDemandMultiplier = 0.7; } },
+  { id:"workers_quit",     title:"Workers Quit Unexpectedly",     desc:"Key staff quit — your shop must close next week (no sales or orders).",                     effect: s => { s.forcedClosureNextWeek = true; } },
+  { id:"economic_down",    title:"Economic Downturn",             desc:"An economic downturn permanently reduces customer spending by 20% from this week.",          effect: s => { s.permanentDemandMultiplier = Math.min(s.permanentDemandMultiplier, 0.8); } },
+  { id:"equip_failure",    title:"Equipment Failure",             desc:"Emergency repairs needed — overhead increases by $2,000 this week.",                        effect: s => { s.extraOverhead = 2000; } },
+  { id:"supply_chain",     title:"Supply Chain Disruption",       desc:"Widespread supply issues — supplier capacity limited to 10 kg this week only.",             effect: s => { s.supplierCapOverride = 10; } },
+  { id:"local_event",      title:"Local Event Demand Surge",      desc:"A large local event causes demand to spike to 2.5× normal this week.",                      effect: s => { s.demandMultiplier = 2.5; } },
+  { id:"forced_closure",   title:"Shop Closure — Staff Shortage", desc:"Staff shortages force a shop closure this week — no sales or orders possible.",             effect: s => { s.shopClosed = true; } },
+];
+
+(function assignWeeks() {
+  const pool = [];
+  for (let w = 2; w <= 28; w++) pool.push(w);
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  ALL_CHALLENGES.forEach((c, i) => c.week = pool[i]);
+})();
+
+function getChallengeForWeek(w) { return ALL_CHALLENGES.find(c => c.week === w) || null; }
 
 function nextWeek() {
-    week++;
-    let demand = Math.floor(Math.random() * 91) + 10;
-    if (competitorEffect) { demand = Math.floor(demand * 0.7); }
-    if (week % 2 === 0) {
-        switch (week) {
-            case 2: alert("Supplier strikes reduce deliveries by 50% this week."); supplierCap = 25; break;
-            case 4: alert("Local festival spikes demand unexpectedly!"); demand += 40; break;
-            case 6: alert("Flood damages stock, forcing disposal of 10kg immediately."); inventory = Math.max(0, inventory - 10); break;
-            case 8: alert("Fuel costs increase, overhead rises by $500."); overhead += 500; break;
-            case 10: alert("Viral TikTok trend causes demand surge!"); demand += 30; break;
-            case 12: alert("Supplier quality issue forces disposal of 15kg of inventory."); inventory = Math.max(0, inventory - 15); break;
-            case 14: alert("New competitors emerge, reducing demand permanently."); competitorEffect = true; break;
-            case 16: alert("Workers quit unexpectedly. Shop will close next week."); forcedClosureWeek = week + 1; break;
-            case 18: alert("Economic downturn reduces customer spending."); demand = Math.floor(demand * 0.8); break;
-            case 20: alert("Equipment failure increases overhead by $400."); overhead += 400; break;
-            case 22: alert("Supply chain issues limit supplier capacity to 10kg."); supplierCap = 10; break;
-            case 24: alert("Local event increases demand by 40kg this week."); demand += 40; break;
-        }
-    } else { supplierCap = 50; }
-    if (week === forcedClosureWeek) {
-        alert("Shop closed this week due to staff shortages. No sales/orders possible.");
-        demand = 0;
-    }
-    let order = (week === forcedClosureWeek) ? 0 : parseInt(document.getElementById('orderQty').value) || 0;
-    let received = Math.min(order, supplierCap);
-    inventoryAges.pop();
-    inventoryAges.unshift(received);
-    let expired = inventoryAges[3];
-    let disposalCost = expired * 10;
-    inventory = inventoryAges.reduce((a,b) => a+b,0) - expired;
-    let startingInventory = inventory;
-    let sold = Math.min(demand, inventory);
-    let lostSales = demand - sold;
+  if (closedBusiness) return;
+  week++;
+
+  const state = {
+    deliveryMultiplier: 1.0,
+    demandMultiplier: 1.0,
+    permanentDemandMultiplier,
+    inventoryLossFraction: 0.0,
+    extraOverhead: 0,
+    supplierCapOverride: null,
+    shopClosed: false,
+    forcedClosureNextWeek: false,
+  };
+
+  if (forcedClosureActive) { state.shopClosed = true; forcedClosureActive = false; }
+
+  const challenge = getChallengeForWeek(week);
+  let challengeLabel = null;
+
+  if (challenge) {
+    challenge.effect(state);
+    if (state.permanentDemandMultiplier !== permanentDemandMultiplier)
+      permanentDemandMultiplier = state.permanentDemandMultiplier;
+    if (state.forcedClosureNextWeek) forcedClosureActive = true;
+    challengeLabel = challenge.title;
+    document.getElementById('challenge-title').textContent = '⚡ ' + challenge.title;
+    document.getElementById('challenge-desc').textContent  = challenge.desc;
+    document.getElementById('challenge-banner').style.display = 'block';
+  } else {
+    document.getElementById('challenge-banner').style.display = 'none';
+  }
+
+  const receivedThisWeek = Math.round(incomingNextWeek * state.deliveryMultiplier);
+  const startingInventory = inventory;
+  inventory += receivedThisWeek;
+
+  if (state.inventoryLossFraction > 0)
+    inventory -= Math.floor(inventory * state.inventoryLossFraction);
+
+  let demand = 0, sold = 0;
+  if (!state.shopClosed) {
+    const base = Math.round(Math.max(5, Math.min(100, randNormal(25, 10))) / 5) * 5;
+    demand = Math.round(base * state.demandMultiplier * permanentDemandMultiplier);
+    sold = Math.min(demand, inventory);
     inventory -= sold;
-    let holdingCost = inventory * pcost * 0.3;
-    let cost = (received * pcost) + overhead + holdingCost + disposalCost;
-    let revenue = sold * scost;
-    let profit = revenue - cost;
-    totalProfit += profit;
-    let row = document.createElement('tr');
-    row.innerHTML = "<td>" + week + "</td>" +
-                    "<td>" + demand + "</td>" +
-                    "<td>" + order + "</td>" +
-                    "<td>" + received + "</td>" +
-                    "<td>" + sold + "</td>" +
-                    "<td>" + inventory + "</td>" +
-                    "<td>" + lostSales + "</td>" +
-                    "<td>$" + disposalCost.toFixed(2) + "</td>" +
-                    "<td>$" + profit.toFixed(2) + "</td>";
-    document.getElementById('log').appendChild(row);
-    document.getElementById('orderQty').value = 0;
-    document.getElementById('orderDisplay').innerText = 0;
-    if (week >= 26) {
-        let finalMessage = "";
-        if (totalProfit > 0) { finalMessage = "Great work! You survived and should celebrate!"; }
-        else if (totalProfit <= 0 && totalProfit > -500) { finalMessage = "You have barely scraped through: another few weeks and things may have gotten worse! Or better, who knows!"; }
-        else { finalMessage = "Well then. You have reached the end, but at what cost? In this case, the cost is $" + Math.abs(totalProfit.toFixed(2)); }
-        alert("Week 2 simulation complete!\nYour total profit/loss: $" + totalProfit.toFixed(2) + ".\n\n" + finalMessage);
-        document.getElementById('nextButton').disabled = true;
-    }
+  }
+
+  const effectiveCap = state.supplierCapOverride ?? supplierCap;
+  const orderPlaced = state.shopClosed ? 0 : (parseInt(document.getElementById('orderQty').value) || 0);
+  incomingNextWeek = Math.min(orderPlaced, effectiveCap);
+
+  const revenue = sold * scost;
+  const holdingCost = inventory * pcost * 0.3;
+  const cost = (receivedThisWeek * pcost) + overhead + state.extraOverhead + holdingCost;
+  const profit = revenue - cost;
+  totalProfit += profit;
+
+  if (totalProfit <= -7000 && !warned7000)   { alert("Financial distress: debt is growing. Try to reduce it below $7,000."); warned7000 = true; }
+  if (totalProfit <= -15000 && !warned15000) { alert("Final warning: the bank may close your business if debt reaches $20,000."); warned15000 = true; }
+  if (totalProfit <= -20000 && !closedBusiness) {
+    alert("The bank has closed your business. Please start again.");
+    closedBusiness = true;
+    document.getElementById('nextButton').disabled = true;
+    return;
+  }
+
+  document.getElementById('stat-week').textContent = week;
+  document.getElementById('stat-inventory').textContent = inventory;
+  document.getElementById('stat-demand').textContent = state.shopClosed ? 'CLOSED' : demand;
+  document.getElementById('stat-incoming').textContent = incomingNextWeek;
+  const profitEl = document.getElementById('stat-profit');
+  profitEl.textContent = '$' + totalProfit.toFixed(2);
+  profitEl.className = 'stat-value ' + (totalProfit >= 0 ? 'pos' : 'neg');
+
+  plWeeks.push(week);
+  plValues.push(profit);
+  updateChart();
+
+  const card = document.createElement('div');
+  const wkClass = challengeLabel ? 'challenge' : (profit >= 0 ? 'profit-wk' : 'loss-wk');
+  card.className = 'week-card ' + wkClass;
+  card.innerHTML = `
+    <div class="week-header">
+      <div class="week-num">Week ${week}</div>
+      ${challengeLabel ? `<span class="week-challenge-tag">⚡ ${challengeLabel}</span>` : '<span></span>'}
+      <div class="week-pl ${profit>=0?'pos':'neg'}">$${profit.toFixed(0)}</div>
+    </div>
+    <div class="week-grid">
+      <div class="wg-item"><strong>${state.shopClosed?'–':demand}</strong>Demand</div>
+      <div class="wg-item"><strong>${sold}</strong>Sold (kg)</div>
+      <div class="wg-item"><strong>${inventory}</strong>End stock</div>
+      <div class="wg-item"><strong>${receivedThisWeek}</strong>Received</div>
+      <div class="wg-item"><strong>${orderPlaced}</strong>Ordered</div>
+      <div class="wg-item"><strong>$${revenue.toFixed(0)}</strong>Revenue</div>
+    </div>
+  `;
+  document.getElementById('log').prepend(card);
+
+  document.getElementById('orderQty').value = 0;
+  document.getElementById('orderDisplay').textContent = 0;
+  document.getElementById('stat-incoming').textContent = 0;
+
+  if (week === 30) {
+    alert('Simulation complete! Record your final profit/loss: $' + totalProfit.toFixed(2));
+    document.getElementById('nextButton').disabled = true;
+  }
 }
-window.onload = function() {
-    document.getElementById('nextButton').addEventListener('click', nextWeek);
-    firstWeekAutoRun();
-};
+
+function randNormal(mean, sd) {
+  let u = 0, v = 0;
+  while (!u) u = Math.random();
+  while (!v) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v) * sd + mean;
+}
+
+function updateChart() {
+  const canvas = document.getElementById('plChart');
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = canvas.parentElement.clientWidth - 28;
+  const cssH = Math.round(cssW * 0.45);
+  canvas.width  = cssW * dpr;
+  canvas.height = cssH * dpr;
+  canvas.style.width  = cssW + 'px';
+  canvas.style.height = cssH + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = cssW, H = cssH;
+  ctx.clearRect(0, 0, W, H);
+
+  const m = { left: 56, right: 10, top: 14, bottom: 26 };
+  const PW = W - m.left - m.right;
+  const PH = H - m.top - m.bottom;
+
+  if (plValues.length === 0) {
+    ctx.fillStyle = '#bbb';
+    ctx.font = '13px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Chart appears after Week 1', W/2, H/2);
+    return;
+  }
+
+  let minY = Math.min(...plValues), maxY = Math.max(...plValues);
+  if (minY === maxY) { minY -= 500; maxY += 500; }
+  const pad = (maxY - minY) * 0.15;
+  minY -= pad; maxY += pad;
+
+  const maxWk = Math.max(...plWeeks);
+  const xS = x => m.left + ((x - 1) / (maxWk - 1 || 1)) * PW;
+  const yS = y => m.top + (1 - (y - minY) / (maxY - minY)) * PH;
+
+  ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+  const fs = Math.max(10, Math.round(W / 52));
+  ctx.font = `${fs}px DM Sans, sans-serif`;
+  ctx.fillStyle = '#888'; ctx.textAlign = 'right';
+  for (let i = 0; i <= 4; i++) {
+    const t = i / 4;
+    const yv = maxY - (maxY - minY) * t;
+    const py = m.top + t * PH;
+    ctx.beginPath(); ctx.moveTo(m.left, py); ctx.lineTo(m.left + PW, py); ctx.stroke();
+    const label = '$' + (Math.abs(Math.round(yv / 100)) * 100).toLocaleString();
+    ctx.fillText((yv < 0 ? '-' : '') + label, m.left - 3, py + 4);
+  }
+
+  if (minY < 0 && maxY > 0) {
+    const zy = yS(0);
+    ctx.strokeStyle = 'rgba(198,40,40,0.35)';
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(m.left, zy); ctx.lineTo(m.left + PW, zy); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ALL_CHALLENGES.forEach(c => {
+    if (c.week && plWeeks.includes(c.week)) {
+      ctx.strokeStyle = 'rgba(230,81,0,0.2)';
+      ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(xS(c.week), m.top); ctx.lineTo(xS(c.week), m.top + PH);
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+  });
+
+  // Fill area
+  ctx.beginPath();
+  plWeeks.forEach((x, i) => {
+    i === 0 ? ctx.moveTo(xS(x), yS(plValues[i])) : ctx.lineTo(xS(x), yS(plValues[i]));
+  });
+  const zeroY = Math.min(yS(0), m.top + PH);
+  ctx.lineTo(xS(plWeeks[plWeeks.length-1]), zeroY);
+  ctx.lineTo(xS(plWeeks[0]), zeroY);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, m.top, 0, m.top + PH);
+  grad.addColorStop(0, 'rgba(26,95,168,0.15)');
+  grad.addColorStop(1, 'rgba(26,95,168,0.01)');
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#1a5fa8'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+  plWeeks.forEach((x, i) => {
+    i === 0 ? ctx.moveTo(xS(x), yS(plValues[i])) : ctx.lineTo(xS(x), yS(plValues[i]));
+  });
+  ctx.stroke();
+
+  // Challenge dots
+  plWeeks.forEach((x, i) => {
+    if (ALL_CHALLENGES.some(c => c.week === x)) {
+      ctx.beginPath();
+      ctx.arc(xS(x), yS(plValues[i]), 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#e65100'; ctx.fill();
+    }
+  });
+
+  // X labels
+  ctx.fillStyle = '#888'; ctx.textAlign = 'center';
+  ctx.font = `${fs}px DM Sans, sans-serif`;
+  const step = plWeeks.length <= 10 ? 1 : plWeeks.length <= 20 ? 2 : 5;
+  plWeeks.forEach(x => {
+    if (x === 1 || x % step === 0)
+      ctx.fillText('W' + x, xS(x), m.top + PH + 16);
+  });
+}
+
+window.addEventListener('resize', () => { if (plValues.length) updateChart(); });
+updateChart();
 </script>
 </body>
 </html>
